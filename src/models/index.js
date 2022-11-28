@@ -1,6 +1,7 @@
-import Community from './Community.model';
-import CommunityPost from './CommunityPost.model';
-import CommunityComment from './CommunityComment.model';
+import ChatLog from './chatLog.model';
+import Community from './community.model';
+import CommunityComment from './communityComment.model';
+import CommunityPost from './communityPost.model';
 
 // Process Association
 

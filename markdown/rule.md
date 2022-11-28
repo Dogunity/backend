@@ -1,4 +1,4 @@
-# 🗂 Project structure
+# Project structure
 
 ### configs
 
@@ -32,7 +32,7 @@
 
 <br/>
 
-# ✔️ Common rules
+# Common rules
 
 ## Code
 

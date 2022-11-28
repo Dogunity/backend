@@ -1,15 +1,10 @@
 import sequelize from '../config/sequelize';
 import { DataTypes, Model } from 'sequelize';
 
-class CommunityPost extends Model {}
+class ReviewComment extends Model {}
 
-CommunityPost.init(
+ReviewComment.init(
   {
-    id: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      unique: true,
-    },
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
@@ -17,11 +12,11 @@ CommunityPost.init(
   },
   {
     sequelize,
-    tableName: 'communityPosts',
     timestamps: true,
+    tableName: 'reviewComments',
     charset: 'utf8mb4',
     collate: 'utf8mb4_general_ci',
   },
 );
 
-export default CommunityPost;
+export default ReviewComment;
