@@ -14,10 +14,6 @@ app.use(cors({ origin: '*', credentials: true }));
 
 sequelize.sync({ alter: true });
 
-app.get('/', (req, res, next) => {
-  res.send('Team08 Backend');
-});
-
 app.use(errorMiddleware);
 
 app.listen(process.env.SEVER_PORT, () =>
