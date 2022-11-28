@@ -20,3 +20,5 @@ ChatLog.init(
     collate: 'utf8mb4_general_ci',
   },
 );
+
+export default ChatLog;
