@@ -9,7 +9,6 @@ import User from './user.model';
 import UserCommunity from './userCommunity.model';
 
 // Model association
-
 // User-Community N:M
 User.belongsToMany(Community, { through: UserCommunity, unique: false });
 Community.belongsToMany(User, { through: UserCommunity, unique: false });
@@ -30,11 +29,11 @@ CommunityPost.belongsTo(Community, {
 
 // CommunityPost-CommunityImage 1:N
 CommunityPost.hasMany(CommunityImage, {
-  foreignKey: 'communityId',
+  foreignKey: 'communityPostId',
   sourceKey: 'id',
 });
 CommunityImage.belongsTo(CommunityPost, {
-  foreignKey: 'communityId',
+  foreignKey: 'communityPostId',
   targetKey: 'id',
 });
 

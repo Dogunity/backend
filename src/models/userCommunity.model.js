@@ -7,20 +7,6 @@ class UserCommunity extends Model {}
 
 UserCommunity.init(
   {
-    userId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: User,
-        key: id,
-      },
-    },
-    communityId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: Community,
-        key: id,
-      },
-    },
     owner: {
       type: DataTypes.BOOLEAN,
     },

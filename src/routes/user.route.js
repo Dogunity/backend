@@ -9,6 +9,6 @@ const userController = new UserController(userService);
 
 const userRouter = Router();
 
-userRouter.post('/users/register', userController.register);
+userRouter.post('/register', userController.register);
 
-export { userRouter };
+export default userRouter;

@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import sequelize from './src/config/sequelize';
 import errorMiddleware from './src/middlewares/error';
+import { userRouter, communityRouter } from './src/routes';
 
 dotenv.config();
 
@@ -14,6 +15,8 @@ app.use(cors({ origin: '*', credentials: true }));
 
 sequelize.sync({ alter: true });
 
+app.use('/users', userRouter);
+app.use('community', communityRouter);
 app.use(errorMiddleware);
 
 app.listen(process.env.SEVER_PORT, () =>

@@ -9,8 +9,8 @@ ChatLog.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    logDate: DataTypes.DATETIME,
-    logTime: DataTypes.DATETIME,
+    logDate: DataTypes.DATE,
+    logTime: DataTypes.DATE,
   },
   {
     sequelize,
