@@ -1,29 +1,34 @@
-class ApiError extends Error {
+class ErrorCheck extends Error {
   constructor(status, message) {
     super(message);
     this.status = status;
     this.message = message;
   }
+}
 
-  static setBadRequest(message) {
-    return new ApiError(400, message);
+class ApiError {
+  constructor() {}
+
+  setBadRequest(message) {
+    return new ErrorCheck(400, message);
   }
 
-  static setUnauthorized(message) {
-    return new ApiError(401, message);
+  setUnauthorized(message) {
+    return new ErrorCheck(401, message);
   }
 
-  static setForbidden(message) {
-    return new ApiError(403, message);
+  setForbidden(message) {
+    return new ErrorCheck(403, message);
   }
 
-  static setNotFound(message) {
-    return new ApiError(404, message);
+  setNotFound(message) {
+    return new ErrorCheck(404, message);
   }
 
-  static setInternalServerError(message) {
-    return new ApiError(500, message);
+  setInternalServerError(message) {
+    return new ErrorCheck(500, message);
   }
 }
 
+Object.freeze(ApiError);
 export default ApiError;
