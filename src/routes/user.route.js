@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import ApiError from '../utils/ApiError';
-import UserService from '../service/user.service';
+import UserService from '../services/user.service';
 import UserController from '../controllers/user.ctrl';
 
 const apiError = new ApiError();

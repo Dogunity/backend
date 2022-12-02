@@ -1,9 +1,4 @@
-import {
-  Community,
-  CommunityComment,
-  CommunityImage,
-  CommunityPost,
-} from '../models';
+import { Community } from '../models';
 import { COMMUNITY_PER_PAGE } from '../utils/constants';
 
 class CommunityService {
@@ -19,7 +14,7 @@ class CommunityService {
   }
 
   async getSelectedCommunities(page) {
-    if (!page) throw this.apiError.setBadRequest('Page required.');
+    if (!page) throw this.apiError.setBadRequest('Page required');
     const selectedCommunities = await Community.findAll({
       offset: (page - 1) * COMMUNITY_PER_PAGE,
       limit: COMMUNITY_PER_PAGE,
@@ -28,6 +23,9 @@ class CommunityService {
   }
 
   async createCommunity(name, communityImage, introduction) {
+    if (!name) throw this.apiError.setBadRequest('Name field required');
+    if (!introduction)
+      throw this.apiError.setBadRequest('Introduction field required');
     return Community.create({ name, communityImage, introduction });
   }
 }

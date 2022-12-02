@@ -13,7 +13,7 @@ class CommunityController {
       return res.status(200).json({
         success: true,
         status: 200,
-        message: 'Successfully GET Community pagination',
+        message: 'Successfully GET community pagination',
         result: { totalCommunityPage, selectedCommunities },
       });
     } catch (err) {
@@ -21,11 +21,24 @@ class CommunityController {
     }
   }
   async createCommunity(req, res, next) {
+    const { name, communityImage, introduction } = req.body;
     try {
+      const createdCommunity = await this.communityService.createCommunity(
+        name,
+        communityImage,
+        introduction,
+      );
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully CREATE a new community',
+        result: createdCommunity,
+      });
     } catch (err) {
       next(err);
     }
   }
 }
 
+Object.freeze(CommunityController);
 export default CommunityController;
