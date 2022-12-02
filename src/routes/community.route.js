@@ -1,15 +1,11 @@
 import { Router } from 'express';
-import ApiError from '../utils/ApiError';
-import CommunityService from '../services/community.service';
-import CommunityController from '../controllers/community.ctrl';
+import { communityCtrl } from '../controllers';
 
-const apiError = new ApiError();
-const communityService = new CommunityService(apiError);
-const communityController = new CommunityController(communityService);
+const router = Router();
 
-const communityRouter = Router();
+router.get('/', communityCtrl.getCommunityList);
+router.post('/', communityCtrl.createCommunity);
+router.put('/:id', communityCtrl.updateCommunity);
+router.delete('/:id', communityCtrl.removeCommunity);
 
-communityRouter.get('/', communityController.getCommunityList);
-communityRouter.post('/', communityController.createCommunity);
-
-export default communityRouter;
+export default router;
