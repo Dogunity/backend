@@ -1,24 +1,52 @@
-import bcrypt from 'bcrypt';
 import { User } from '../models';
+import ApiError from '../utils/ApiError';
+import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
 
-class UserService {
-  constructor(apiError) {
-    this.apiError = apiError;
-  }
+dotenv.config();
 
-  async createUser(nickname, email, password) {
-    if (!email || !nickname || !password) this.apiError.setBadRequest('틀림');
-    const foundUser = await User.findOne({ where: { email: email } });
-    if (foundUser) this.apiError.setBadRequest('이미 사용중임');
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const createdNewUser = await User.create({
-      nickname: nickname,
-      email: email,
+const passwordHashing = (password) => {
+  return bcrypt.hash(password, Number.parseInt(process.env.SALTROUNDS));
+};
+
+export default {
+  async register(email, password, nickname) {
+    if (!email || !password || !nickname)
+      throw ApiError.setBadRequest('All fields required');
+
+    const foundUser = await User.findOne({ where: { email } });
+    if (foundUser) throw ApiError.setBadRequest('Email already exists');
+
+    const foundNickname = await User.findOne({ where: { nickname } });
+    if (foundNickname) throw ApiError.setBadRequest('Nickname already exists');
+
+    const hashedPassword = await passwordHashing(password);
+
+    await User.create({
+      email,
       password: hashedPassword,
+      nickname,
     });
-    return createdNewUser;
-  }
-}
+  },
 
-Object.freeze(UserService);
-export default UserService;
+  async login(email, password) {
+    if (!email || !password)
+      throw ApiError.setBadRequest('All fields required');
+
+    const foundUser = await User.findOne({ where: { email } });
+    if (!foundUser) throw ApiError.setBadRequest('Email does not exist');
+
+    const hashedPassword = await passwordHashing(password);
+
+    const isCorrectPassword = await bcrypt.compare(password, hashedPassword);
+
+    if (!isCorrectPassword) throw ApiError.setBadRequest('Wrong password');
+  },
+
+  async createAccessToken(id) {
+    const accessToken = jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET, {
+      expireIn: '1h',
+    });
+    return accessToken;
+  },
+};

@@ -1,4 +1,4 @@
-import userRouter from './user.route';
 import communityRouter from './community.route';
+import userRouter from './user.route';
 
-export { userRouter, communityRouter };
+export { communityRouter, userRouter };

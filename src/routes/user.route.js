@@ -1,14 +1,8 @@
 import { Router } from 'express';
-import ApiError from '../utils/ApiError';
-import UserService from '../services/user.service';
-import UserController from '../controllers/user.ctrl';
+import userCtrl from '../controllers/user.ctrl';
 
-const apiError = new ApiError();
-const userService = new UserService(apiError);
-const userController = new UserController(userService);
+const router = Router();
 
-const userRouter = Router();
+router.post('/register', userCtrl.register);
 
-userRouter.post('/register', userController.register);
-
-export default userRouter;
+export default router;

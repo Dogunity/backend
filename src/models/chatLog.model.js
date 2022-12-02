@@ -7,7 +7,7 @@ ChatLog.init(
   {
     contents: {
       type: DataTypes.TEXT,
-      allowNull: true,
+      allowNull: false,
     },
     logDate: DataTypes.DATE,
     logTime: DataTypes.DATE,

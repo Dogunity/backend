@@ -1,19 +1,17 @@
-class UserController {
-  constructor(userService) {
-    this.userService = userService;
-  }
+import { userService } from '../services';
 
+export default {
   async register(req, res, next) {
+    const { email, password, nickname } = req.body;
     try {
-      const { nickname, email, password } = req.body;
-      const newUser = await userService.createUser(nickname, email, password);
-      if (!newUser) throw new Error('만들기 실패');
-      res.status(201).json(newUser);
-    } catch (error) {
-      next(error);
+      await userService.register(email, password, nickname);
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully REGISTER a new user',
+      });
+    } catch (err) {
+      next(err);
     }
-  }
-}
-
-Object.freeze(UserController);
-export default UserController;
+  },
+};

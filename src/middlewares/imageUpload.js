@@ -6,7 +6,7 @@ import multerS3 from 'multer-s3';
 
 dotenv.config();
 
-function uploadImageS3() {
+const imageUpload = () => {
   AWS.config.update({
     accessKeyId: process.env.ACCESS_KEY_ID,
     secretAccessKey: process.env.SECRET_ACCESS_KEY,
@@ -26,6 +26,6 @@ function uploadImageS3() {
     storage: storage,
     limits: { fileSize: 100 * 1024 * 1024 },
   });
-}
+};
 
-export { uploadImageS3 };
+export { imageUpload };

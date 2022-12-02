@@ -11,7 +11,7 @@ User.init(
       unique: true,
     },
     email: {
-      type: DataTypes.STRING(40),
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notNull: {
@@ -30,7 +30,7 @@ User.init(
       },
     },
     nickname: {
-      type: DataTypes.STRING(15),
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {
@@ -43,7 +43,7 @@ User.init(
       type: DataTypes.STRING(2048),
       allowNull: false,
       defaultValue:
-        'https://as2.ftcdn.net/v2/jpg/00/64/67/63/1000_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+        'https://www.nicepng.com/png/detail/933-9332131_profile-picture-default-png.png',
     },
   },
   {
