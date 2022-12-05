@@ -1,4 +1,4 @@
 import communityService from './community.service';
-import userService from './user.service';
+import authService from './auth.service';
 
-export { communityService, userService };
+export { communityService, authService };

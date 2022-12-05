@@ -1,4 +1,4 @@
 import communityCtrl from './community.ctrl';
-import userCtrl from './user.ctrl';
+import authCtrl from './auth.ctrl';
 
-export { communityCtrl, userCtrl };
+export { communityCtrl, authCtrl };

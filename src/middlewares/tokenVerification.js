@@ -8,7 +8,10 @@ export default (req, res, next) => {
 
   try {
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    // Insert userId in req.userId
+
+    req.userId = decodedToken.id;
+
+    next();
   } catch (err) {
     if (err.name === 'TokenExpiredError')
       next(ApiError.setUnauthorized('Token expired'));
