@@ -3,10 +3,9 @@ import Community from './community.model';
 import CommunityComment from './communityComment.model';
 import CommunityImage from './communityImage.model';
 import CommunityPost from './communityPost.model';
-import Review from './review.model';
-import ReviewComment from './reviewComment.model';
 import User from './user.model';
 import UserCommunity from './userCommunity.model';
+import RefreshToken from './refreshToken.model';
 
 // Model association
 // User-Community N:M
@@ -47,17 +46,9 @@ CommunityComment.belongsTo(CommunityPost, {
   targetKey: 'id',
 });
 
-// User-Review N:M
-User.belongsToMany(Review, { through: 'reviewLikes', unique: false });
-Review.belongsToMany(User, { through: 'reviewLikes', unique: false });
-
-// User-Review 1:N
-User.hasMany(Review, { foreignKey: 'userId', sourceKey: 'id' });
-Review.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
-
-// Review-ReviewComment 1:N
-Review.hasMany(ReviewComment, { foreignKey: 'reviewId', sourceKey: 'id' });
-ReviewComment.belongsTo(Review, { foreignKey: 'reviewId', targetKey: 'id' });
+// User-RefreshToken 1:1
+User.hasOne(RefreshToken, { foreignKey: 'userId', sourceKey: 'id' });
+RefreshToken.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
 // ChatLog TBD
 // User-ChatLog N:M
@@ -72,7 +63,5 @@ export {
   CommunityComment,
   CommunityImage,
   CommunityPost,
-  Review,
-  ReviewComment,
   User,
 };
