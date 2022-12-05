@@ -1,5 +1,5 @@
 import sequelize from '../config/sequelize';
-import { DataTypes, Sequelize, Model } from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
 
 class Community extends Model {}
 

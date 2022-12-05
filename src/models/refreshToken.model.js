@@ -1,27 +1,26 @@
 import sequelize from '../config/sequelize';
 import { DataTypes, Model } from 'sequelize';
 
-class Review extends Model {}
+class RefreshToken extends Model {}
 
-Review.init(
+RefreshToken.init(
   {
-    description: {
-      type: DataTypes.TEXT,
+    userId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
+      primaryKey: true,
     },
-    images: {
+    refreshToken: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
     },
   },
   {
     sequelize,
     timestamps: true,
-    tableName: 'reviews',
+    tableName: 'refreshTokens',
     charset: 'utf8',
     collate: 'utf8_general_ci',
   },
 );
 
-export default Review;
+export default RefreshToken;
