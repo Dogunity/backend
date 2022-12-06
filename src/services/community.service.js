@@ -17,6 +17,7 @@ export default {
     const selectedCommunities = await Community.findAll({
       offset: (page - 1) * COMMUNITY_PER_PAGE,
       limit: COMMUNITY_PER_PAGE,
+      order: [['createdAt', 'DESC']],
     });
     return selectedCommunities;
   },
