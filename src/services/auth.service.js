@@ -9,7 +9,7 @@ dotenv.config();
 
 const apiError = new ApiError();
 
-const passwordHashing = (password) => {
+const passwordHashing = async (password) => {
   return bcrypt.hash(password, Number.parseInt(process.env.SALTROUNDS));
 };
 
@@ -39,14 +39,16 @@ export default {
 
     const foundUser = await User.findOne({
       where: { email },
-      attributes: { exclude: ['password'] },
       raw: true,
     });
 
     if (!foundUser) throw apiError.setBadRequest('Email does not exist.');
 
-    const hashedPassword = await passwordHashing(password);
-    const isCorrectPassword = await bcrypt.compare(password, hashedPassword);
+    const isCorrectPassword = await bcrypt.compare(
+      password,
+      foundUser.password,
+    );
+
     if (!isCorrectPassword)
       throw apiError.setBadRequest('Wrong password. Please check again.');
 
