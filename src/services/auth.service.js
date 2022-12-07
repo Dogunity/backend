@@ -3,6 +3,7 @@ import ApiError from '../utils/ApiError';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 
@@ -15,13 +16,13 @@ const passwordHashing = (password) => {
 export default {
   async register(email, password, nickname) {
     if (!email || !password || !nickname)
-      throw apiError.setBadRequest('All fields required');
+      throw apiError.setBadRequest('All fields are required.');
 
     const foundUser = await User.findOne({ where: { email } });
-    if (foundUser) throw apiError.setBadRequest('Email already exists');
+    if (foundUser) throw apiError.setBadRequest('Email already exists.');
 
     const foundNickname = await User.findOne({ where: { nickname } });
-    if (foundNickname) throw apiError.setBadRequest('Nickname already exists');
+    if (foundNickname) throw apiError.setBadRequest('Nickname already exists.');
 
     const hashedPassword = await passwordHashing(password);
 
@@ -34,78 +35,81 @@ export default {
 
   async login(email, password) {
     if (!email || !password)
-      throw apiError.setBadRequest('All fields required');
+      throw apiError.setBadRequest('All fields are required.');
 
     const foundUser = await User.findOne({
       where: { email },
       attributes: { exclude: ['password'] },
       raw: true,
     });
-    if (!foundUser) throw apiError.setBadRequest('Email does not exist');
+
+    if (!foundUser) throw apiError.setBadRequest('Email does not exist.');
 
     const hashedPassword = await passwordHashing(password);
     const isCorrectPassword = await bcrypt.compare(password, hashedPassword);
-    if (!isCorrectPassword) throw apiError.setBadRequest('Wrong password');
+    if (!isCorrectPassword)
+      throw apiError.setBadRequest('Wrong password. Please check again.');
 
-    return foundUser;
-  },
+    const accessToken = jwt.sign(
+      { id: foundUser.id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION },
+    );
 
-  async createAccessToken(id) {
-    const accessToken = jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: '1h',
-    });
-    return accessToken;
+    const refreshToken = await this.createRefreshToken(foundUser.id);
+
+    return { ...foundUser, accessToken, refreshToken };
   },
 
   async createRefreshToken(id) {
-    const refreshToken = jwt.sign({ id }, process.env.REFRESH_TOKEN_SECRET, {
-      expiresIn: '2 days',
-    });
-    return refreshToken;
-  },
+    const expiredAt = new Date();
 
-  async saveRefreshToken(id, refreshToken) {
-    const existingToken = await RefreshToken.findOne({ where: { userId: id } });
-    if (!existingToken) await RefreshToken.create({ userId: id, refreshToken });
-    else await RefreshToken.update({ refreshToken }, { where: { userId: id } });
-  },
-
-  async verifyAccessToken(accessToken) {
-    if (!accessToken)
-      throw apiError.setBadRequest('Access token does not exist');
-    const decodedToken = jwt.verify(
-      accessToken,
-      process.env.ACCESS_TOKEN_SECRET,
+    expiredAt.setSeconds(
+      expiredAt.getSeconds() + process.env.REFRESH_TOKEN_EXPIRATION,
     );
-    return decodedToken.id;
+
+    const token = uuidv4();
+
+    const refreshToken = await RefreshToken.create({
+      token,
+      userId: id,
+      expiryDate: expiredAt.getTime(),
+    });
+
+    return refreshToken.token;
   },
 
-  async verifyRefreshToken(refreshToken) {
+  async verifyRefreshTokenExpiration(refreshToken) {
+    return refreshToken.getTime() < new Date().getTime();
+  },
+
+  async reissueToken(exRefreshToken) {
+    if (!exRefreshToken)
+      throw apiError.setBadRequest('Refresh token is required.');
+
+    const refreshToken = await RefreshToken.findOne({
+      where: { token: exRefreshToken },
+    });
+
     if (!refreshToken)
-      throw apiError.setBadRequest('Refresh token does not exist');
-    const existingRefreshToken = await RefreshToken.findOne({
-      where: { refreshToken },
-    });
+      throw apiError.setForbidden('Refresh token is not in the database.');
 
-    if (!existingRefreshToken)
-      throw apiError.setBadRequest('Please check the refresh token again');
+    if (this.verifyRefreshTokenExpiration(refreshToken)) {
+      await RefreshToken.destroy({ where: { id: refreshToken.id } });
+      throw apiError.setForbidden(
+        'Refresh token has expired. Please make a new login request.',
+      );
+    }
 
-    const decodedToken = jwt.verify(
-      refreshToken,
-      process.env.REFRESH_TOKEN_SECRET,
+    const user = await refreshToken.getUser();
+    const newAccessToken = jwt.sign(
+      { id: user.id },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,
+      },
     );
 
-    return decodedToken.id;
-  },
-
-  async reissueToken(accessToken, refreshToken) {
-    if (!accessToken) {
-      if (refreshToken) return this.createAccessToken(refreshToken);
-      else
-        throw apiError.setUnauthorized(
-          'Access & Refresh tokens all expired. Please login again',
-        );
-    }
-    return this.createAccessToken(accessToken);
+    return { newAccessToken, refreshToken: refreshToken.token };
   },
 };

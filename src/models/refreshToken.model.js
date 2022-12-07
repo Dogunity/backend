@@ -5,13 +5,11 @@ class RefreshToken extends Model {}
 
 RefreshToken.init(
   {
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-    },
-    refreshToken: {
+    token: {
       type: DataTypes.STRING,
+    },
+    expiryDate: {
+      type: DataTypes.DATE,
     },
   },
   {
