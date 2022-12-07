@@ -1,1 +1,1 @@
-export const COMMUNITY_PER_PAGE = 10;
+export const COMMUNITY_PER_PAGE = 9;
