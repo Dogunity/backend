@@ -53,7 +53,7 @@ export default {
     const accessToken = jwt.sign(
       { id: foundUser.id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION },
+      { expiresIn: Number.parseInt(process.env.ACCESS_TOKEN_EXPIRATION) },
     );
 
     const refreshToken = await this.createRefreshToken(foundUser.id);
@@ -65,7 +65,8 @@ export default {
     const expiredAt = new Date();
 
     expiredAt.setSeconds(
-      expiredAt.getSeconds() + process.env.REFRESH_TOKEN_EXPIRATION,
+      expiredAt.getSeconds() +
+        Number.parseInt(process.env.REFRESH_TOKEN_EXPIRATION),
     );
 
     const token = uuidv4();
@@ -106,7 +107,7 @@ export default {
       { id: user.id },
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,
+        expiresIn: Number.parseInt(process.env.ACCESS_TOKEN_EXPIRATION),
       },
     );
 
