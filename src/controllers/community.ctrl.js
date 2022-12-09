@@ -71,4 +71,19 @@ export default {
       next(err);
     }
   },
+
+  async likeCommunity(req, res, next) {
+    const userId = req.userId;
+    const { id } = req.params;
+    try {
+      await communityService.likeCommunity(userId, id);
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully LIKED the community.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };

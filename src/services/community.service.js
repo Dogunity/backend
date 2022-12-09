@@ -1,4 +1,4 @@
-import { Community, UserCommunity } from '../models';
+import { Community, User, UserCommunity } from '../models';
 import ApiError from '../utils/ApiError';
 import { COMMUNITY_PER_PAGE } from '../utils/constants';
 import { v4 as uuidv4 } from 'uuid';
@@ -57,5 +57,12 @@ export default {
   async removeCommunity(id) {
     if (!id) throw apiError.setBadRequest('Community ID is required.');
     await Community.destroy({ where: { id } });
+  },
+
+  async likeCommunity(userId, communityId) {
+    if (!userId) throw apiError.setBadRequest('User token is required.');
+    if (!communityId) throw apiError.setBadRequest('Community ID is required');
+
+    await UserCommunity.create({ userId, communityId });
   },
 };
