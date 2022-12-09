@@ -8,6 +8,7 @@ export default {
       const selectedCommunities = await communityService.getSelectedCommunities(
         page,
       );
+
       return res.status(200).json({
         success: true,
         status: 200,
@@ -28,6 +29,7 @@ export default {
         communityImage,
         introduction,
       );
+
       return res.status(201).json({
         success: true,
         status: 201,
@@ -39,15 +41,18 @@ export default {
   },
 
   async updateCommunity(req, res, next) {
+    const userId = req.userId;
     const { id } = req.params;
     const { name, communityImage, introduction } = req.body;
     try {
       await communityService.updateCommunity(
+        userId,
         id,
         name,
         communityImage,
         introduction,
       );
+
       return res.status(201).json({
         success: true,
         status: 201,
@@ -62,6 +67,7 @@ export default {
     const { id } = req.params;
     try {
       await communityService.removeCommunity(id);
+
       return res.status(201).json({
         success: true,
         status: 201,

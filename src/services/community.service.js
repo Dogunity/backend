@@ -44,10 +44,21 @@ export default {
     });
   },
 
-  async updateCommunity(id, name, communityImage, introduction) {
+  async updateCommunity(userId, id, name, communityImage, introduction) {
+    if (!userId) throw apiError.setBadRequest('User token is required.');
     if (!id) throw apiError.setBadRequest('Community ID is required.');
     if (!name || !introduction)
       throw apiError.setBadRequest('All fields are required.');
+
+    const isCommunityOwner = await UserCommunity.findOne({
+      where: { owner: true, userId },
+    });
+
+    if (!isCommunityOwner)
+      throw apiError.setBadRequest(
+        'Only the community owner could update the contents.',
+      );
+
     await Community.update(
       { name, communityImage, introduction },
       { where: { id } },
