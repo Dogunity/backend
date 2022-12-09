@@ -8,13 +8,10 @@ import UserCommunity from './userCommunity.model';
 import RefreshToken from './refreshToken.model';
 
 // Model association
-// User-Community N:M
-User.belongsToMany(Community, { through: UserCommunity, unique: false });
-Community.belongsToMany(User, { through: UserCommunity, unique: false });
 
 // User-CommuntyPost 1:N
-User.hasMany(CommunityPost, { foreignKey: 'userId', sourceKey: 'userId' });
-Community.belongsTo(User, { foreignKey: 'userId', targetKey: 'userId' });
+User.hasMany(CommunityPost, { foreignKey: 'userId', sourceKey: 'id' });
+CommunityPost.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
 // Community-CommuntyPost 1:N
 Community.hasMany(CommunityPost, {
@@ -51,11 +48,6 @@ User.hasOne(RefreshToken, { foreignKey: 'userId', sourceKey: 'id' });
 RefreshToken.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
 // ChatLog TBD
-// User-ChatLog N:M
-// User.belongsToMany(ChatLog, { through: 'UserChatLog', unique: false });
-// ChatLog.belongsToMany(User, { through: 'UserChatLog', unique: false });
-// User-ChatLog 1:N
-// ChatLog-Community 1:1
 
 export {
   ChatLog,
@@ -64,5 +56,6 @@ export {
   CommunityImage,
   CommunityPost,
   User,
+  UserCommunity,
   RefreshToken,
 };

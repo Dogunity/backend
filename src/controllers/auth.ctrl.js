@@ -8,7 +8,7 @@ export default {
       return res.status(201).json({
         success: true,
         status: 201,
-        message: 'Successfully REGISTER a new user',
+        message: 'Successfully REGISTER a new user.',
       });
     } catch (err) {
       next(err);
@@ -23,7 +23,7 @@ export default {
       return res.status(200).json({
         success: true,
         status: 200,
-        message: 'LOGIN success',
+        message: 'LOGIN success.',
         result: foundUser,
       });
     } catch (err) {
@@ -42,7 +42,7 @@ export default {
       return res.status(201).json({
         success: true,
         status: 201,
-        message: 'Successfully REISSUED tokens',
+        message: 'Successfully REISSUED tokens.',
         result: {
           accessToken: newAccessToken,
           refreshToken,

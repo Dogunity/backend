@@ -8,10 +8,11 @@ export default {
       const selectedCommunities = await communityService.getSelectedCommunities(
         page,
       );
+
       return res.status(200).json({
         success: true,
         status: 200,
-        message: 'Successfully GET community pagination',
+        message: 'Successfully GET community list pagination.',
         result: { totalCommunityPage, selectedCommunities },
       });
     } catch (err) {
@@ -19,17 +20,20 @@ export default {
     }
   },
   async createCommunity(req, res, next) {
+    const userId = req.userId;
     const { name, communityImage, introduction } = req.body;
     try {
       await communityService.createCommunity(
+        userId,
         name,
         communityImage,
         introduction,
       );
+
       return res.status(201).json({
         success: true,
         status: 201,
-        message: 'Successfully CREATE a new community',
+        message: 'Successfully CREATE a new community.',
       });
     } catch (err) {
       next(err);
@@ -37,19 +41,22 @@ export default {
   },
 
   async updateCommunity(req, res, next) {
+    const userId = req.userId;
     const { id } = req.params;
     const { name, communityImage, introduction } = req.body;
     try {
       await communityService.updateCommunity(
+        userId,
         id,
         name,
         communityImage,
         introduction,
       );
+
       return res.status(201).json({
         success: true,
         status: 201,
-        message: 'Successfully UPDATE the community',
+        message: 'Successfully UPDATE the community.',
       });
     } catch (err) {
       next(err);
@@ -57,13 +64,30 @@ export default {
   },
 
   async removeCommunity(req, res, next) {
+    const userId = req.userId;
     const { id } = req.params;
     try {
-      await communityService.removeCommunity(id);
+      await communityService.removeCommunity(userId, id);
+
       return res.status(201).json({
         success: true,
         status: 201,
-        message: 'Successfully DELETE the community',
+        message: 'Successfully DELETE the community.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async likeCommunity(req, res, next) {
+    const userId = req.userId;
+    const { id } = req.params;
+    try {
+      await communityService.likeCommunity(userId, id);
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully LIKED the community.',
       });
     } catch (err) {
       next(err);

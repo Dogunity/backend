@@ -1,7 +1,5 @@
 import sequelize from '../config/sequelize';
 import { DataTypes, Model } from 'sequelize';
-import User from './user.model';
-import Community from './community.model';
 
 class UserCommunity extends Model {}
 
@@ -9,6 +7,16 @@ UserCommunity.init(
   {
     owner: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    communityId: {
+      type: DataTypes.UUID,
+      allowNull: false,
     },
   },
   {
