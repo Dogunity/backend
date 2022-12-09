@@ -50,14 +50,7 @@ export default {
     if (!name || !introduction)
       throw apiError.setBadRequest('All fields are required.');
 
-    const isCommunityOwner = await UserCommunity.findOne({
-      where: { owner: true, userId },
-    });
-
-    if (!isCommunityOwner)
-      throw apiError.setBadRequest(
-        'Only the community owner could update the contents.',
-      );
+    await this.checkCommunityOwner(userId);
 
     await Community.update(
       { name, communityImage, introduction },
@@ -65,9 +58,24 @@ export default {
     );
   },
 
-  async removeCommunity(id) {
+  async removeCommunity(userId, id) {
+    if (!userId) throw apiError.setBadRequest('User token is required.');
     if (!id) throw apiError.setBadRequest('Community ID is required.');
+
+    await this.checkCommunityOwner(userId);
+
     await Community.destroy({ where: { id } });
+  },
+
+  async checkCommunityOwner(userId) {
+    const isCommunityOwner = await UserCommunity.findOne({
+      where: { owner: true, userId },
+    });
+
+    if (!isCommunityOwner)
+      throw apiError.setBadRequest(
+        'Only the community owner could change the contents.',
+      );
   },
 
   async likeCommunity(userId, communityId) {

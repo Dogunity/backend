@@ -64,9 +64,10 @@ export default {
   },
 
   async removeCommunity(req, res, next) {
+    const userId = req.userId;
     const { id } = req.params;
     try {
-      await communityService.removeCommunity(id);
+      await communityService.removeCommunity(userId, id);
 
       return res.status(201).json({
         success: true,
