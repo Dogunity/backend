@@ -78,9 +78,15 @@ export default {
       );
   },
 
-  async likeCommunity(userId, communityId) {
+  async likeCommunity(userId, id) {
     if (!userId) throw apiError.setBadRequest('User token is required.');
-    if (!communityId) throw apiError.setBadRequest('Community ID is required');
+    if (!id) throw apiError.setBadRequest('Community ID is required');
+
+    const { communityId } = await Community.findOne({
+      where: { id },
+      attributes: ['communityId'],
+      raw: true,
+    });
 
     await UserCommunity.create({ userId, communityId });
   },
