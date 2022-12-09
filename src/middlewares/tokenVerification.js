@@ -4,7 +4,7 @@ import ApiError from '../utils/ApiError';
 export default (req, res, next) => {
   const token = req.headers['authorization'].split('Bearer ')[1];
 
-  if (!token) next(ApiError.setBadRequest('Token required'));
+  if (!token) next(ApiError.setBadRequest('Token is required'));
 
   try {
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);

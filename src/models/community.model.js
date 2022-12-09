@@ -5,6 +5,11 @@ class Community extends Model {}
 
 Community.init(
   {
+    communityId: {
+      type: DataTypes.UUID,
+      unique: true,
+      allowNull: false,
+    },
     name: {
       type: DataTypes.STRING,
       allownull: false,

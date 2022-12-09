@@ -11,7 +11,7 @@ export default {
       return res.status(200).json({
         success: true,
         status: 200,
-        message: 'Successfully GET community pagination',
+        message: 'Successfully GET community list pagination.',
         result: { totalCommunityPage, selectedCommunities },
       });
     } catch (err) {
@@ -19,9 +19,11 @@ export default {
     }
   },
   async createCommunity(req, res, next) {
+    const userId = req.userId;
     const { name, communityImage, introduction } = req.body;
     try {
       await communityService.createCommunity(
+        userId,
         name,
         communityImage,
         introduction,
@@ -29,7 +31,7 @@ export default {
       return res.status(201).json({
         success: true,
         status: 201,
-        message: 'Successfully CREATE a new community',
+        message: 'Successfully CREATE a new community.',
       });
     } catch (err) {
       next(err);
@@ -49,7 +51,7 @@ export default {
       return res.status(201).json({
         success: true,
         status: 201,
-        message: 'Successfully UPDATE the community',
+        message: 'Successfully UPDATE the community.',
       });
     } catch (err) {
       next(err);
@@ -63,7 +65,7 @@ export default {
       return res.status(201).json({
         success: true,
         status: 201,
-        message: 'Successfully DELETE the community',
+        message: 'Successfully DELETE the community.',
       });
     } catch (err) {
       next(err);
