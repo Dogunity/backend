@@ -10,7 +10,7 @@ export default {
     const totalCommunityCount = await Community.count();
     if (totalCommunityCount % COMMUNITY_PER_PAGE === 0)
       return totalCommunityCount / COMMUNITY_PER_PAGE;
-    else return Math.floor(totalCommunityCount / COMMUNITY_PER_PAGE) + 1;
+    return Math.floor(totalCommunityCount / COMMUNITY_PER_PAGE) + 1;
   },
 
   async getSelectedCommunities(page) {
@@ -78,16 +78,41 @@ export default {
       );
   },
 
-  async likeCommunity(userId, id) {
-    if (!userId) throw apiError.setBadRequest('User token is required.');
-    if (!id) throw apiError.setBadRequest('Community ID is required');
-
+  async findCommunityUUIDwithID(id) {
     const { communityId } = await Community.findOne({
       where: { id },
       attributes: ['communityId'],
       raw: true,
     });
 
+    if (!communityId)
+      throw apiError.setBadRequest('Community with the ID does not exist.');
+
+    return communityId;
+  },
+
+  async likeCommunity(userId, id) {
+    if (!userId) throw apiError.setBadRequest('User token is required.');
+    if (!id) throw apiError.setBadRequest('Community ID is required');
+
+    const communityId = await this.findCommunityUUIDwithID(id);
+
+    const isLikeHistoryExist = await UserCommunity.findOne({
+      where: { userId, communityId },
+    });
+
+    if (isLikeHistoryExist)
+      throw apiError.setBadRequest('This user already liked the community.');
+
     await UserCommunity.create({ userId, communityId });
+  },
+
+  async cancelLikeCommunity(userId, id) {
+    if (!userId) throw apiError.setBadRequest('User token is required.');
+    if (!id) throw apiError.setBadRequest('Community ID is required');
+
+    const communityId = await this.findCommunityUUIDwithID(id);
+
+    await UserCommunity.destroy({ where: { userId, communityId } });
   },
 };
