@@ -2,11 +2,12 @@ import { communityService } from '../services';
 
 export default {
   async getCommunityList(req, res, next) {
-    const { page } = req.query;
+    const { page, order } = req.query;
     try {
       const totalCommunityPage = await communityService.countCommunityPage();
       const selectedCommunities = await communityService.getSelectedCommunities(
         page,
+        order,
       );
 
       return res.status(200).json({
