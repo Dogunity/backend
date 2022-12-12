@@ -44,4 +44,13 @@ export default {
 
     return arrangedSelectedLikedCommunities;
   },
+
+  async editUserInfo(userId, nickname, profileImg) {
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
+
+    if (!nickname || !profileImg)
+      throw apiError.setBadRequest('All fields are required.');
+
+    await User.update({ nickname, profileImg }, { where: { id: userId } });
+  },
 };
