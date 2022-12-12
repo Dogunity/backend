@@ -18,14 +18,12 @@ export default {
     if (!page) throw apiError.setBadRequest('Page number is required.');
     if (!order) throw apiError.setBadRequest('Ordering type is required.');
 
-    if (order === 'createdAt') {
-      const selectedCommunities = await Community.findAll({
-        offset: (page - 1) * COMMUNITY_PER_PAGE,
-        limit: COMMUNITY_PER_PAGE,
-        order: [['createdAt', 'DESC']],
-      });
-      return selectedCommunities;
-    }
+    const selectedCommunities = await Community.findAll({
+      offset: (page - 1) * COMMUNITY_PER_PAGE,
+      limit: COMMUNITY_PER_PAGE,
+      order: [[order, 'DESC']],
+    });
+    return selectedCommunities;
   },
 
   async createCommunity(userId, name, communityImage, introduction) {
@@ -95,20 +93,6 @@ export default {
 
     return foundCommunity;
   },
-  // async findCommunityUUIDwithID(id) {
-  //   if (!id) throw apiError.setBadRequest('Commmunity ID is required.');
-
-  //   const { communityId } = await Community.findOne({
-  //     where: { id },
-  //     attributes: ['communityId'],
-  //     raw: true,
-  //   });
-
-  //   if (!communityId)
-  //     throw apiError.setBadRequest('Community with the ID does not exist.');
-
-  //   return communityId;
-  // },
 
   async likeCommunity(userId, id) {
     if (!userId) throw apiError.setBadRequest('User token is required.');
