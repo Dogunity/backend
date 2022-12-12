@@ -9,11 +9,11 @@ dotenv.config();
 
 const apiError = new ApiError();
 
-const passwordHashing = async (password) => {
-  return bcrypt.hash(password, Number.parseInt(process.env.SALTROUNDS));
-};
-
 export default {
+  async passwordHashing(password) {
+    return bcrypt.hash(password, Number.parseInt(process.env.SALTROUNDS));
+  },
+
   async register(email, password, nickname) {
     if (!email || !password || !nickname)
       throw apiError.setBadRequest('All fields are required.');
@@ -24,7 +24,7 @@ export default {
     const foundNickname = await User.findOne({ where: { nickname } });
     if (foundNickname) throw apiError.setBadRequest('Nickname already exists.');
 
-    const hashedPassword = await passwordHashing(password);
+    const hashedPassword = await this.passwordHashing(password);
 
     await User.create({
       email,

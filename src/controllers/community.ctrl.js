@@ -2,11 +2,12 @@ import { communityService } from '../services';
 
 export default {
   async getCommunityList(req, res, next) {
-    const { page } = req.query;
+    const { page, order } = req.query;
     try {
       const totalCommunityPage = await communityService.countCommunityPage();
       const selectedCommunities = await communityService.getSelectedCommunities(
         page,
+        order,
       );
 
       return res.status(200).json({
@@ -87,7 +88,22 @@ export default {
       return res.status(201).json({
         success: true,
         status: 201,
-        message: 'Successfully LIKED the community.',
+        message: 'Successfully LIKE the community.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async cancelLikeCommunity(req, res, next) {
+    const userId = req.userId;
+    const { id } = req.params;
+    try {
+      await communityService.cancelLikeCommunity(userId, id);
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully UNDO LIKE the community.',
       });
     } catch (err) {
       next(err);

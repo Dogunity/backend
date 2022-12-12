@@ -9,5 +9,10 @@ router.post('/', tokenVerification, communityCtrl.createCommunity);
 router.put('/:id', tokenVerification, communityCtrl.updateCommunity);
 router.delete('/:id', tokenVerification, communityCtrl.removeCommunity);
 router.post('/:id/like', tokenVerification, communityCtrl.likeCommunity);
+router.post(
+  '/:id/nolike',
+  tokenVerification,
+  communityCtrl.cancelLikeCommunity,
+);
 
 export default router;
