@@ -79,6 +79,8 @@ export default {
   },
 
   async findCommunityUUIDwithID(id) {
+    if (!id) throw apiError.setBadRequest('Commmunity ID is required.');
+
     const { communityId } = await Community.findOne({
       where: { id },
       attributes: ['communityId'],

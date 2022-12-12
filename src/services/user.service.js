@@ -1,4 +1,4 @@
-import { User, UserCommunity } from '../models';
+import { Community, User, UserCommunity } from '../models';
 import ApiError from '../utils/ApiError';
 import { LIKED_COMMUNITY_PER_PAGE } from '../utils/constants';
 
@@ -19,11 +19,29 @@ export default {
 
   async getSelectedLikedCommunities(page, userId) {
     if (!page) throw apiError.setBadRequest('Page number is required.');
+    if (!userId) throw apiError.setBadRequest('User ID required.');
 
     const selectedLikedCommunitiesID = await UserCommunity.findAll({
       where: { userId },
+      attributes: ['communityId'],
+      order: [['createdAt', 'DESC']],
+      raw: true,
     });
 
-    console.log(selectedLikedCommunitiesID);
+    const selectedLikedCommunities = await Promise.all(
+      selectedLikedCommunitiesID.map(({ communityId }) =>
+        Community.findAll({
+          where: { communityId },
+          raw: true,
+        }),
+      ),
+    );
+
+    const arrangedSelectedLikedCommunities = [];
+    selectedLikedCommunities.forEach(([community]) => {
+      arrangedSelectedLikedCommunities.push(community);
+    });
+
+    return arrangedSelectedLikedCommunities;
   },
 };
