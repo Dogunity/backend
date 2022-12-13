@@ -5,10 +5,9 @@ class CommunityImage extends Model {}
 
 CommunityImage.init(
   {
-    images: {
+    imageName1: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
   },
   {
