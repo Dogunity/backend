@@ -1,6 +1,5 @@
 import Community from './community.model';
 import CommunityComment from './communityComment.model';
-
 import CommunityPost from './communityPost.model';
 import User from './user.model';
 import UserCommunity from './userCommunity.model';
