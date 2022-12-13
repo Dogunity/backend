@@ -35,6 +35,10 @@ CommunityComment.belongsTo(CommunityPost, {
 User.hasOne(RefreshToken, { foreignKey: 'userId', sourceKey: 'id' });
 RefreshToken.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
+// User-CommunityComment 1:N
+User.hasMany(CommunityComment, { foreignKey: 'userId', sourceKey: 'id' });
+CommunityComment.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+
 export {
   Community,
   CommunityComment,
