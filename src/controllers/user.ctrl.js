@@ -2,20 +2,15 @@ import { userService } from '../services';
 
 export default {
   async likedCommunityList(req, res, next) {
-    const { page } = req.query;
     const userId = req.userId;
     try {
-      const totalLikedCommunityPage = await userService.countLikedCommunityPage(
-        userId,
-      );
-      const selectedLikedCommunities =
-        await userService.getSelectedLikedCommunities(page, userId);
+      const likedCommunities = await userService.getLikedCommunities(userId);
 
       return res.status(200).json({
         success: true,
         status: 200,
         message: 'Successfully GET liked community list.',
-        result: { totalLikedCommunityPage, selectedLikedCommunities },
+        result: likedCommunities,
       });
     } catch (err) {
       next(err);
@@ -58,20 +53,15 @@ export default {
   },
 
   async getMyCommunity(req, res, next) {
-    const { page } = req.query;
     const userId = req.userId;
     try {
-      const totalMyCommunityPage = await userService.countMyCommunityPage(
-        page,
-        userId,
-      );
       const myCommunities = await userService.getMyCommunities(userId);
 
       return res.status(200).json({
         success: true,
         status: 200,
         message: 'Successfully GET my community list.',
-        result: { totalMyCommunityPage, myCommunities },
+        result: myCommunities,
       });
     } catch (err) {
       next(err);

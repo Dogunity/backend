@@ -20,32 +20,26 @@ export default {
     return Math.floor(totalCommunityCount / LIKED_COMMUNITY_PER_PAGE) + 1;
   },
 
-  async getSelectedLikedCommunities(page, userId) {
-    if (!page) throw apiError.setBadRequest('Page number is required.');
+  async getLikedCommunities(userId) {
     if (!userId) throw apiError.setBadRequest('User ID required.');
 
-    const selectedLikedCommunitiesID = await UserCommunity.findAll({
+    const likedCommunitiesID = await UserCommunity.findAll({
       where: { userId },
       attributes: ['communityId'],
       order: [['createdAt', 'DESC']],
       raw: true,
     });
 
-    const selectedLikedCommunities = await Promise.all(
-      selectedLikedCommunitiesID.map(({ communityId }) =>
-        Community.findAll({
+    const likedCommunities = await Promise.all(
+      likedCommunitiesID.map(({ communityId }) =>
+        Community.findOne({
           where: { communityId },
           raw: true,
         }),
       ),
     );
 
-    const arrangedSelectedLikedCommunities = [];
-    selectedLikedCommunities.forEach(([community]) => {
-      arrangedSelectedLikedCommunities.push(community);
-    });
-
-    return arrangedSelectedLikedCommunities;
+    return likedCommunities;
   },
 
   async getUserInfo(userId) {
@@ -71,21 +65,10 @@ export default {
     );
   },
 
-  async countMyCommunityPage(page, userId) {
-    if (!page) throw apiError.setBadRequest('Page number is required.');
-    if (!userId) throw apiError.setBadRequest('User ID is required.');
-
-    const totalMyCommunity = await UserCommunity.count({ where: { userId } });
-
-    if (totalMyCommunity % MY_COMMUNITY_PER_PAGE === 0)
-      return totalMyCommunity / MY_COMMUNITY_PER_PAGE;
-    return Math.floor(totalMyCommunity / MY_COMMUNITY_PER_PAGE) + 1;
-  },
-
   async getMyCommunities(userId) {
     if (!userId) throw apiError.setBadRequest('User Id ');
 
-    const selectedMyCommunitiesID = await UserCommunity.findAll({
+    const myCommunitiesID = await UserCommunity.findAll({
       where: { userId, owner: true },
       attributes: ['communityId'],
       order: [['createdAt', 'DESC']],
@@ -93,16 +76,11 @@ export default {
     });
 
     const myCommunities = await Promise.all(
-      selectedMyCommunitiesID.map(({ communityId }) =>
-        Community.findAll({ where: { communityId }, raw: true }),
+      myCommunitiesID.map(({ communityId }) =>
+        Community.findOne({ where: { communityId }, raw: true }),
       ),
     );
 
-    const arrangedMyCommunities = [];
-    myCommunities.forEach(([community]) => {
-      arrangedMyCommunities.push(community);
-    });
-
-    return arrangedMyCommunities;
+    return myCommunities;
   },
 };
