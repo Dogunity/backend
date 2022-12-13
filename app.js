@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: '*', credentials: true }));
 
-sequelize.sync({ force: true });
+sequelize.sync({ alter: true });
 
 app.use('/community', communityRouter);
 app.use('/auth', authRouter);

@@ -45,13 +45,14 @@ export default {
   async updateCommunity(req, res, next) {
     const userId = req.userId;
     const { id } = req.params;
-    const { name, communityImage, introduction } = req.body;
+    const { name, introduction } = req.body;
+    const { location } = req.file;
     try {
       await communityService.updateCommunity(
         userId,
         id,
         name,
-        communityImage,
+        location,
         introduction,
       );
 
