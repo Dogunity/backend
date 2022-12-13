@@ -15,6 +15,11 @@ CommunityPost.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    likeCnt: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
   },
   {
     sequelize,

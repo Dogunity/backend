@@ -22,11 +22,29 @@ export default {
     }
   },
 
+  async getUserInfo(req, res, next) {
+    const userId = req.userId;
+    try {
+      const foundUser = await userService.getUserInfo(userId);
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: 'Successfully GET the user information.',
+        result: foundUser,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   async editUserInfo(req, res, next) {
     const userId = req.userId;
-    const { nickname, profileImg } = req.body;
+    const { nickname } = req.body;
+    const { location } = req.file;
+
     try {
-      await userService.editUserInfo(userId, nickname, profileImg);
+      await userService.editUserInfo(userId, nickname, location);
 
       return res.status(201).json({
         success: true,

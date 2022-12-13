@@ -45,12 +45,26 @@ export default {
     return arrangedSelectedLikedCommunities;
   },
 
-  async editUserInfo(userId, nickname, profileImg) {
+  async getUserInfo(userId) {
     if (!userId) throw apiError.setBadRequest('User ID is required.');
 
-    if (!nickname || !profileImg)
-      throw apiError.setBadRequest('All fields are required.');
+    const foundUser = await User.findOne({ where: { id: userId }, raw: true });
 
-    await User.update({ nickname, profileImg }, { where: { id: userId } });
+    if (!foundUser)
+      throw apiError.setBadRequest('User with the ID does not exist.');
+
+    return foundUser;
+  },
+
+  async editUserInfo(userId, nickname, location) {
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
+
+    if (!nickname && !location)
+      throw apiError.setBadRequest('At least one field is required.');
+
+    await User.update(
+      { nickname, profileImg: location },
+      { where: { id: userId } },
+    );
   },
 };

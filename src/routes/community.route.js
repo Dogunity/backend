@@ -14,5 +14,6 @@ router.post(
   tokenVerification,
   communityCtrl.cancelLikeCommunity,
 );
+router.post('/:id', tokenVerification, communityCtrl.createPost);
 
 export default router;

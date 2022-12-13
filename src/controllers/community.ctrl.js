@@ -109,4 +109,20 @@ export default {
       next(err);
     }
   },
+
+  async createPost(req, res, next) {
+    const userId = req.userId;
+    const { id } = req.params;
+    const { images, description } = req.body;
+    try {
+      await communityService.createPost(userId, id, images, description);
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully CREATE the post.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };

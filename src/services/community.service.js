@@ -1,8 +1,12 @@
-import { Community, User, UserCommunity } from '../models';
+import {
+  Community,
+  UserCommunity,
+  CommunityPost,
+  CommunityImage,
+} from '../models';
 import ApiError from '../utils/ApiError';
 import { COMMUNITY_PER_PAGE } from '../utils/constants';
 import { v4 as uuidv4 } from 'uuid';
-import sequelize from '../config/sequelize';
 
 const apiError = new ApiError();
 
@@ -129,5 +133,21 @@ export default {
       throw apiError.setBadRequest('Like count cannot be a minus value.');
 
     await foundCommunity.decrement('likeCnt');
+  },
+
+  async createPost(userId, id, images, description) {
+    if (!userId) throw apiError.setBadRequest('User ID is required');
+    if (!id) throw apiError.setBadRequest('Community ID is required.');
+    if (!images || !description)
+      throw apiError.setBadRequest('All fields are required.');
+
+    const createdPost = await CommunityPost.create({
+      id: uuidv4(),
+      userId,
+      communityId: id,
+      description,
+    });
+
+    await CommunityImage.create({ images, communityPostId: createdPost.id });
   },
 };
