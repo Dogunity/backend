@@ -13,5 +13,6 @@ router.put(
   userCtrl.editUserInfo,
 );
 router.get('/info', tokenVerification, userCtrl.getUserInfo);
+router.get('/community/own', tokenVerification, userCtrl.getMyCommunity);
 
 export default router;
