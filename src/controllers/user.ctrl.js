@@ -41,6 +41,7 @@ export default {
   async editUserInfo(req, res, next) {
     const userId = req.userId;
     const { nickname } = req.body;
+    console.log(req.file);
     const { location } = req.file;
 
     try {

@@ -16,10 +16,8 @@ const accessKey = process.env.S3_ACCESS_KEY_ID;
 const secretAccessKey = process.env.S3_SECRET_ACCESS_KEY;
 
 aws.config.update({
-  credentials: {
-    accessKeyId: accessKey,
-    secretAccessKey: secretAccessKey,
-  },
+  accessKeyId: accessKey,
+  secretAccessKey: secretAccessKey,
   region: bucketRegion,
 });
 
@@ -27,12 +25,11 @@ const upload = multer({
   storage: multerS3({
     s3: new aws.S3(),
     bucket: bucketName,
-    acl: 'public-read',
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
-      cb(null, randomImageName() + '_' + path.basename(file.originalname));
+      cb(null, path.basename(file.originalname) + '_' + randomImageName());
     },
   }),
 });
