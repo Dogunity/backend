@@ -30,9 +30,9 @@ export default {
     return selectedCommunities;
   },
 
-  async createCommunity(userId, name, communityImage, introduction) {
+  async createCommunity(userId, name, location, introduction) {
     if (!userId) throw apiError.setBadRequest('User token is required.');
-    if (!name || !introduction)
+    if (!name || !location || !introduction)
       throw apiError.setBadRequest('All fields are required.');
 
     const communityId = uuidv4();
@@ -46,21 +46,21 @@ export default {
     await Community.create({
       communityId,
       name,
-      communityImage,
+      communityImage: location,
       introduction,
     });
   },
 
-  async updateCommunity(userId, id, name, communityImage, introduction) {
+  async updateCommunity(userId, id, name, location, introduction) {
     if (!userId) throw apiError.setBadRequest('User token is required.');
     if (!id) throw apiError.setBadRequest('Community ID is required.');
-    if (!name || !introduction)
+    if (!name || !location || !introduction)
       throw apiError.setBadRequest('All fields are required.');
 
     await this.checkCommunityOwner(userId);
 
     await Community.update(
-      { name, communityImage, introduction },
+      { name, communityImage: location, introduction },
       { where: { id } },
     );
   },
@@ -141,13 +141,14 @@ export default {
     if (!images || !description)
       throw apiError.setBadRequest('All fields are required.');
 
-    const createdPost = await CommunityPost.create({
+    images = images.map((image) => image.location);
+
+    return CommunityPost.create({
       id: uuidv4(),
+      description,
+      images,
       userId,
       communityId: id,
-      description,
     });
-
-    await CommunityImage.create({ images, communityPostId: createdPost.id });
   },
 };

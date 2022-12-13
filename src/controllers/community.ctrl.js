@@ -22,12 +22,13 @@ export default {
   },
   async createCommunity(req, res, next) {
     const userId = req.userId;
-    const { name, communityImage, introduction } = req.body;
+    const { name, introduction } = req.body;
+    const { location } = req.file;
     try {
       await communityService.createCommunity(
         userId,
         name,
-        communityImage,
+        location,
         introduction,
       );
 
@@ -44,13 +45,14 @@ export default {
   async updateCommunity(req, res, next) {
     const userId = req.userId;
     const { id } = req.params;
-    const { name, communityImage, introduction } = req.body;
+    const { name, introduction } = req.body;
+    const { location } = req.file;
     try {
       await communityService.updateCommunity(
         userId,
         id,
         name,
-        communityImage,
+        location,
         introduction,
       );
 
@@ -113,7 +115,8 @@ export default {
   async createPost(req, res, next) {
     const userId = req.userId;
     const { id } = req.params;
-    const { images, description } = req.body;
+    const images = req.files;
+    const { description } = req.body;
     try {
       await communityService.createPost(userId, id, images, description);
       return res.status(201).json({

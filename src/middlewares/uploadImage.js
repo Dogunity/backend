@@ -29,7 +29,7 @@ const upload = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
-      cb(null, path.basename(file.originalname) + '_' + randomImageName());
+      cb(null, randomImageName() + '_' + path.basename(file.originalname));
     },
   }),
 });
