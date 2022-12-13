@@ -1,25 +1,9 @@
 import { Community, User, UserCommunity } from '../models';
 import ApiError from '../utils/ApiError';
-import {
-  LIKED_COMMUNITY_PER_PAGE,
-  MY_COMMUNITY_PER_PAGE,
-} from '../utils/constants';
 
 const apiError = new ApiError();
 
 export default {
-  async countLikedCommunityPage(userId) {
-    if (!userId) throw apiError.setBadRequest('User ID is required.');
-
-    const totalCommunityCount = await UserCommunity.count({
-      where: { userId },
-    });
-
-    if (totalCommunityCount % LIKED_COMMUNITY_PER_PAGE === 0)
-      return totalCommunityCount / LIKED_COMMUNITY_PER_PAGE;
-    return Math.floor(totalCommunityCount / LIKED_COMMUNITY_PER_PAGE) + 1;
-  },
-
   async getLikedCommunities(userId) {
     if (!userId) throw apiError.setBadRequest('User ID required.');
 

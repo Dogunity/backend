@@ -31,5 +31,6 @@ router.post(
   upload.array('images'),
   communityCtrl.createPost,
 );
+router.get('/:id', communityCtrl.getPosts);
 
 export default router;

@@ -1,11 +1,6 @@
-import {
-  Community,
-  UserCommunity,
-  CommunityPost,
-  CommunityImage,
-} from '../models';
+import { Community, UserCommunity, CommunityPost } from '../models';
 import ApiError from '../utils/ApiError';
-import { COMMUNITY_PER_PAGE } from '../utils/constants';
+import { COMMUNITY_PER_PAGE, FEED_PER_PAGE } from '../utils/constants';
 import { v4 as uuidv4 } from 'uuid';
 
 const apiError = new ApiError();
@@ -150,5 +145,25 @@ export default {
       userId,
       communityId: id,
     });
+  },
+
+  async countFeedPage(id, page) {
+    const totalPosts = await CommunityPost.count({
+      where: { communityId: id },
+    });
+
+    if (totalPosts % FEED_PER_PAGE === 0) return totalPosts / FEED_PER_PAGE;
+    return Math.floor(totalPosts / FEED_PER_PAGE) + 1;
+  },
+
+  async selectedPosts(id, page) {
+    const foundPosts = await CommunityPost.findAll({
+      where: { communityId: id },
+      offset: (page - 1) * FEED_PER_PAGE,
+      limit: FEED_PER_PAGE,
+      order: [['createdAt', 'DESC']],
+    });
+
+    return foundPosts;
   },
 };
