@@ -53,20 +53,15 @@ export default {
   },
 
   async getMyCommunity(req, res, next) {
-    const { page } = req.query;
     const userId = req.userId;
     try {
-      const totalMyCommunityPage = await userService.countMyCommunityPage(
-        page,
-        userId,
-      );
       const myCommunities = await userService.getMyCommunities(userId);
 
       return res.status(200).json({
         success: true,
         status: 200,
         message: 'Successfully GET my community list.',
-        result: { totalMyCommunityPage, myCommunities },
+        result: myCommunities,
       });
     } catch (err) {
       next(err);
