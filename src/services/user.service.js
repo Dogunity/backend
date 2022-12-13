@@ -20,32 +20,26 @@ export default {
     return Math.floor(totalCommunityCount / LIKED_COMMUNITY_PER_PAGE) + 1;
   },
 
-  async getSelectedLikedCommunities(page, userId) {
-    if (!page) throw apiError.setBadRequest('Page number is required.');
+  async getLikedCommunities(userId) {
     if (!userId) throw apiError.setBadRequest('User ID required.');
 
-    const selectedLikedCommunitiesID = await UserCommunity.findAll({
+    const likedCommunitiesID = await UserCommunity.findAll({
       where: { userId },
       attributes: ['communityId'],
       order: [['createdAt', 'DESC']],
       raw: true,
     });
 
-    const selectedLikedCommunities = await Promise.all(
-      selectedLikedCommunitiesID.map(({ communityId }) =>
-        Community.findAll({
+    const likedCommunities = await Promise.all(
+      likedCommunitiesID.map(({ communityId }) =>
+        Community.findOne({
           where: { communityId },
           raw: true,
         }),
       ),
     );
 
-    const arrangedSelectedLikedCommunities = [];
-    selectedLikedCommunities.forEach(([community]) => {
-      arrangedSelectedLikedCommunities.push(community);
-    });
-
-    return arrangedSelectedLikedCommunities;
+    return likedCommunities;
   },
 
   async getUserInfo(userId) {
