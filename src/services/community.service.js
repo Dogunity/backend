@@ -30,9 +30,9 @@ export default {
     return selectedCommunities;
   },
 
-  async createCommunity(userId, name, communityImage, introduction) {
+  async createCommunity(userId, name, location, introduction) {
     if (!userId) throw apiError.setBadRequest('User token is required.');
-    if (!name || !introduction)
+    if (!name || !location || !introduction)
       throw apiError.setBadRequest('All fields are required.');
 
     const communityId = uuidv4();
@@ -46,7 +46,7 @@ export default {
     await Community.create({
       communityId,
       name,
-      communityImage,
+      communityImage: location,
       introduction,
     });
   },

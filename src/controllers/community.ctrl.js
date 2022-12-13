@@ -22,12 +22,13 @@ export default {
   },
   async createCommunity(req, res, next) {
     const userId = req.userId;
-    const { name, communityImage, introduction } = req.body;
+    const { name, introduction } = req.body;
+    const { location } = req.file;
     try {
       await communityService.createCommunity(
         userId,
         name,
-        communityImage,
+        location,
         introduction,
       );
 
