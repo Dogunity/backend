@@ -1,12 +1,15 @@
 import { Community, User, UserCommunity } from '../models';
 import ApiError from '../utils/ApiError';
-import { LIKED_COMMUNITY_PER_PAGE } from '../utils/constants';
+import {
+  LIKED_COMMUNITY_PER_PAGE,
+  MY_COMMUNITY_PER_PAGE,
+} from '../utils/constants';
 
 const apiError = new ApiError();
 
 export default {
   async countLikedCommunityPage(userId) {
-    if (!userId) throw apiError.setBadRequest('User ID required.');
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
 
     const totalCommunityCount = await UserCommunity.count({
       where: { userId },
@@ -66,5 +69,40 @@ export default {
       { nickname, profileImg: location },
       { where: { id: userId } },
     );
+  },
+
+  async countMyCommunityPage(page, userId) {
+    if (!page) throw apiError.setBadRequest('Page number is required.');
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
+
+    const totalMyCommunity = await UserCommunity.count({ where: { userId } });
+
+    if (totalMyCommunity % MY_COMMUNITY_PER_PAGE === 0)
+      return totalMyCommunity / MY_COMMUNITY_PER_PAGE;
+    return Math.floor(totalMyCommunity / MY_COMMUNITY_PER_PAGE) + 1;
+  },
+
+  async getMyCommunities(userId) {
+    if (!userId) throw apiError.setBadRequest('User Id ');
+
+    const selectedMyCommunitiesID = await UserCommunity.findAll({
+      where: { userId, owner: true },
+      attributes: ['communityId'],
+      order: [['createdAt', 'DESC']],
+      raw: true,
+    });
+
+    const myCommunities = await Promise.all(
+      selectedMyCommunitiesID.map(({ communityId }) =>
+        Community.findAll({ where: { communityId }, raw: true }),
+      ),
+    );
+
+    const arrangedMyCommunities = [];
+    myCommunities.forEach(([community]) => {
+      arrangedMyCommunities.push(community);
+    });
+
+    return arrangedMyCommunities;
   },
 };
