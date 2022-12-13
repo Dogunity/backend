@@ -25,6 +25,11 @@ router.post(
   tokenVerification,
   communityCtrl.cancelLikeCommunity,
 );
-router.post('/:id', tokenVerification, communityCtrl.createPost);
+router.post(
+  '/:id',
+  tokenVerification,
+  upload.array('images'),
+  communityCtrl.createPost,
+);
 
 export default router;

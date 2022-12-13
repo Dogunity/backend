@@ -141,13 +141,14 @@ export default {
     if (!images || !description)
       throw apiError.setBadRequest('All fields are required.');
 
-    const createdPost = await CommunityPost.create({
+    images = images.map((image) => image.location);
+
+    return CommunityPost.create({
       id: uuidv4(),
+      description,
+      images,
       userId,
       communityId: id,
-      description,
     });
-
-    await CommunityImage.create({ images, communityPostId: createdPost.id });
   },
 };

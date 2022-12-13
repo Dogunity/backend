@@ -20,6 +20,9 @@ CommunityPost.init(
       allowNull: false,
       defaultValue: 0,
     },
+    images: {
+      type: DataTypes.JSON,
+    },
   },
   {
     sequelize,

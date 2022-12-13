@@ -1,7 +1,6 @@
-import ChatLog from './chatLog.model';
 import Community from './community.model';
 import CommunityComment from './communityComment.model';
-import CommunityImage from './communityImage.model';
+
 import CommunityPost from './communityPost.model';
 import User from './user.model';
 import UserCommunity from './userCommunity.model';
@@ -23,16 +22,6 @@ CommunityPost.belongsTo(Community, {
   targetKey: 'id',
 });
 
-// CommunityPost-CommunityImage 1:N
-CommunityPost.hasMany(CommunityImage, {
-  foreignKey: 'communityPostId',
-  sourceKey: 'id',
-});
-CommunityImage.belongsTo(CommunityPost, {
-  foreignKey: 'communityPostId',
-  targetKey: 'id',
-});
-
 // CommunityPost-CommunityComment 1:N
 CommunityPost.hasMany(CommunityComment, {
   foreignKey: 'communityPostId',
@@ -47,13 +36,9 @@ CommunityComment.belongsTo(CommunityPost, {
 User.hasOne(RefreshToken, { foreignKey: 'userId', sourceKey: 'id' });
 RefreshToken.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
-// ChatLog TBD
-
 export {
-  ChatLog,
   Community,
   CommunityComment,
-  CommunityImage,
   CommunityPost,
   User,
   UserCommunity,
