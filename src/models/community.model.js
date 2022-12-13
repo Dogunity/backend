@@ -7,7 +7,7 @@ Community.init(
   {
     communityId: {
       type: DataTypes.UUID,
-      unique: true,
+      unique: 'communityId',
       allowNull: false,
     },
     name: {

@@ -8,7 +8,7 @@ User.init(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: 'email',
     },
     password: {
       type: DataTypes.STRING,
@@ -17,7 +17,7 @@ User.init(
     nickname: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: 'nickname',
     },
     profileImg: {
       type: DataTypes.STRING,

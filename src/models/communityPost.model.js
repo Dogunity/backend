@@ -8,7 +8,7 @@ CommunityPost.init(
     id: {
       type: DataTypes.UUID,
       allowNull: false,
-      unique: true,
+      unique: 'id',
       primaryKey: true,
     },
     description: {
