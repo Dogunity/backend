@@ -32,5 +32,6 @@ router.post(
   communityCtrl.createPost,
 );
 router.get('/:id', communityCtrl.getPosts);
+router.get('/:id/:postId', communityCtrl.getPost);
 
 export default router;

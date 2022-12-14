@@ -166,4 +166,11 @@ export default {
 
     return foundPosts;
   },
+
+  async getPost(id, postId) {
+    if (!id) throw apiError.setBadRequest('Community ID is required.');
+    if (!postId) throw apiError.setBadRequest('Post ID is required.');
+
+    return CommunityPost.findOne({ where: { communityId: id, id: postId } });
+  },
 };

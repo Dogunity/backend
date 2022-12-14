@@ -147,4 +147,20 @@ export default {
       next(err);
     }
   },
+
+  async getPost(req, res, next) {
+    const { id, postId } = req.params;
+    try {
+      const foundPost = await communityService.getPost(id, postId);
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: 'Successfully GET the post.',
+        result: foundPost,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
