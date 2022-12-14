@@ -33,4 +33,21 @@ export default {
       next(err);
     }
   },
+
+  async deleteComment(req, res, next) {
+    const userId = req.userId;
+    const { id } = req.params;
+    const { commentId } = req.query;
+    try {
+      await postService.deleteComment(userId, id, commentId);
+
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully DELETE the comment.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };

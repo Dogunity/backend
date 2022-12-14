@@ -39,4 +39,21 @@ export default {
 
     return foundComments;
   },
+
+  async deleteComment(userId, id, commentId) {
+    if (!userId) throw apiError.setBadRequest('User ID is required');
+    if (!id) throw apiError.setBadRequest('Post ID is required.');
+    if (!commentId) throw apiError.setBadRequest('Comment ID is required.');
+
+    const foundComment = await CommunityComment.findOne({
+      where: { id: commentId, communityPostId: id },
+    });
+
+    if (foundComment.userId !== userId)
+      throw apiError.setForbidden('Only the writer could delete the comment.');
+
+    await CommunityComment.destroy({
+      where: { id: commentId, communityPostId: id, userId },
+    });
+  },
 };
