@@ -17,4 +17,20 @@ export default {
       next(err);
     }
   },
+
+  async getComments(req, res, next) {
+    const { id } = req.params;
+    try {
+      const foundComments = await postService.getComments(id);
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: 'Successfully GET comments.',
+        result: foundComments,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
