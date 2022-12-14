@@ -34,12 +34,12 @@ export default {
     }
   },
 
-  async deleteComment(req, res, next) {
+  async removeComment(req, res, next) {
     const userId = req.userId;
     const { id } = req.params;
     const { commentId } = req.query;
     try {
-      await postService.deleteComment(userId, id, commentId);
+      await postService.removeComment(userId, id, commentId);
 
       return res.status(201).json({
         success: true,

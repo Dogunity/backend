@@ -28,26 +28,19 @@ export default {
     const foundComments = await CommunityComment.findAll({
       where: { communityPostId: id },
       order: [['createdAt', 'DESC']],
-      raw: true,
+      include: [
+        {
+          model: User,
+          attributes: { exclude: ['password'] },
+        },
+      ],
     });
-
-    await Promise.all(
-      foundComments.map(async (comment) => {
-        const userId = comment.userId;
-        const userInfo = await User.findOne({
-          where: { id: userId },
-          attributes: ['id', 'email', 'nickname', 'profileImg'],
-          raw: true,
-        });
-        comment.userInfo = userInfo;
-      }),
-    );
 
     return foundComments;
   },
 
-  async deleteComment(userId, id, commentId) {
-    if (!userId) throw apiError.setBadRequest('User ID is required');
+  async removeComment(userId, id, commentId) {
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
     if (!id) throw apiError.setBadRequest('Post ID is required.');
     if (!commentId) throw apiError.setBadRequest('Comment ID is required.');
 
