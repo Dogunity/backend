@@ -67,7 +67,7 @@ export default {
     if (!id) throw apiError.setBadRequest('Post ID is required.');
 
     const isLikeHistoryExist = await CommunityPostLike.findOne({
-      where: { UserId: userId, CommunityPostId: id },
+      where: { userId, communityPostId: id },
     });
 
     if (isLikeHistoryExist)
@@ -80,7 +80,7 @@ export default {
 
     await foundPost.increment('likeCnt');
 
-    return CommunityPostLike.create({ UserId: userId, CommunityPostId: id });
+    return CommunityPostLike.create({ userId, communityPostId: id });
   },
 
   async cancelLikePost(userId, id) {
@@ -88,14 +88,14 @@ export default {
     if (!id) throw apiError.setBadRequest('Post ID is required.');
 
     const isLikeHistoryExist = await CommunityPostLike.findOne({
-      where: { UserId: userId, CommunityPostId: id },
+      where: { userId, communityPostId: id },
     });
 
     if (!isLikeHistoryExist)
       throw apiError.setBadRequest('This user did not LIKE the post.');
 
     await CommunityPostLike.destroy({
-      where: { UserId: userId, CommunityPostId: id },
+      where: { userId, communityPostId: id },
     });
 
     const foundPost = await CommunityPost.findOne({ where: { id } });

@@ -12,9 +12,18 @@ import CommunityPostLike from './communityPostLike.model';
 User.hasMany(CommunityPost, { foreignKey: 'userId', sourceKey: 'id' });
 CommunityPost.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
-// User-CommunityPost N:M (regarding LIKE)
-User.belongsToMany(CommunityPost, { through: CommunityPostLike });
-CommunityPost.belongsToMany(User, { through: CommunityPostLike });
+// User-CommunityPostLike-CommunityPost 1:N, 1:N (regarding LIKE)
+User.hasMany(CommunityPostLike, { foreignKey: 'userId', sourceKey: 'id' });
+CommunityPostLike.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+
+CommunityPost.hasMany(CommunityPostLike, {
+  foreignKey: 'communityPostId',
+  sourceKey: 'id',
+});
+CommunityPostLike.belongsTo(CommunityPost, {
+  foreignKey: 'communityPostId',
+  targetKey: 'id',
+});
 
 // Community-CommuntyPost 1:N
 Community.hasMany(CommunityPost, {

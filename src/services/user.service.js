@@ -1,4 +1,10 @@
-import { Community, CommunityPost, User, UserCommunity } from '../models';
+import {
+  Community,
+  CommunityPost,
+  CommunityPostLike,
+  User,
+  UserCommunity,
+} from '../models';
 import ApiError from '../utils/ApiError';
 
 const apiError = new ApiError();
@@ -75,5 +81,9 @@ export default {
       where: { userId },
       order: [['createdAt', 'DESC']],
     });
+  },
+
+  async getLikedPosts(userId) {
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
   },
 };
