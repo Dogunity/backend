@@ -1,4 +1,4 @@
-import { CommunityComment, User } from '../models';
+import { CommunityComment, CommunityPost, User } from '../models';
 import ApiError from '../utils/ApiError';
 
 const apiError = new ApiError();
@@ -56,4 +56,12 @@ export default {
       where: { id: commentId, communityPostId: id, userId },
     });
   },
+
+  // async likePost(userId, id) {
+  //   if (!userId) throw apiError.setBadRequest('User ID is required');
+  //   if (!id) throw apiError.setBadRequest('Post ID is required.');
+
+  //   const foundPost = await CommunityPost.findOne({ where: { id } });
+
+  // },
 };

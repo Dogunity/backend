@@ -1,4 +1,4 @@
-import { Community, User, UserCommunity } from '../models';
+import { Community, CommunityPost, User, UserCommunity } from '../models';
 import ApiError from '../utils/ApiError';
 
 const apiError = new ApiError();
@@ -66,5 +66,9 @@ export default {
     );
 
     return myCommunities;
+  },
+
+  async myPosts(userId) {
+    await CommunityPost.findAll({ where: { userId } });
   },
 };
