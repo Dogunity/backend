@@ -163,4 +163,28 @@ export default {
       next(err);
     }
   },
+
+  async updatePost(req, res, next) {
+    const userId = req.userId;
+    const { id, postId } = req.params;
+    const images = req.files;
+    const { description } = req.body;
+    try {
+      await communityService.updatePost(
+        userId,
+        id,
+        postId,
+        images,
+        description,
+      );
+
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully UPDATE the post.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };

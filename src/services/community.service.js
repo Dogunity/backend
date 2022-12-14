@@ -76,7 +76,7 @@ export default {
 
     if (!isCommunityOwner)
       throw apiError.setBadRequest(
-        'Only the community owner could change the contents.',
+        'Only the community owner can change the contents.',
       );
   },
 
@@ -172,5 +172,31 @@ export default {
     if (!postId) throw apiError.setBadRequest('Post ID is required.');
 
     return CommunityPost.findOne({ where: { communityId: id, id: postId } });
+  },
+
+  async updatePost(userId, id, postId, images, description) {
+    if (!userId) throw apiError.setBadRequest('User ID is required');
+    if (!id) throw apiError.setBadRequest('Community ID is required.');
+    if (!postId) throw apiError.setBadRequest('Post ID is required.');
+
+    if (!images || !description)
+      throw apiError.setBadRequest('All fields are required.');
+
+    const foundPost = await CommunityPost.findOne({
+      where: { id: postId, communityId: id },
+    });
+
+    if (foundPost.userId !== userId)
+      throw apiError.setForbidden('Only the writer can edit the post.');
+
+    images = images.map((image) => image.location);
+
+    return CommunityPost.update(
+      {
+        description,
+        images,
+      },
+      { where: { id: postId, communityId: id, userId } },
+    );
   },
 };

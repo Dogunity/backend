@@ -33,5 +33,11 @@ router.post(
 );
 router.get('/:id', communityCtrl.getPosts);
 router.get('/:id/:postId', communityCtrl.getPost);
+router.put(
+  '/:id/:postId',
+  tokenVerification,
+  upload.array('images'),
+  communityCtrl.updatePost,
+);
 
 export default router;
