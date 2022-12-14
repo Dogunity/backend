@@ -8,5 +8,6 @@ router.post('/:id', tokenVerification, postCtrl.createComment);
 router.get('/:id', postCtrl.getComments);
 router.delete('/:id', tokenVerification, postCtrl.deleteComment);
 router.post('/:id/like', tokenVerification, postCtrl.likePost);
+router.post('/:id/nolike', tokenVerification, postCtrl.cancelLikePost);
 
 export default router;

@@ -1,4 +1,9 @@
-import { CommunityComment, CommunityPostLike, User } from '../models';
+import {
+  CommunityComment,
+  CommunityPost,
+  CommunityPostLike,
+  User,
+} from '../models';
 import ApiError from '../utils/ApiError';
 
 const apiError = new ApiError();
@@ -68,6 +73,39 @@ export default {
     if (isLikeHistoryExist)
       throw apiError.setBadRequest('This user already liked the post.');
 
+    const foundPost = await CommunityPost.findOne({ where: { id } });
+
+    if (!foundPost)
+      throw apiError.setBadRequest('Post with that ID does not exist.');
+
+    await foundPost.increment('likeCnt');
+
     return CommunityPostLike.create({ UserId: userId, CommunityPostId: id });
+  },
+
+  async cancelLikePost(userId, id) {
+    if (!userId) throw apiError.setBadRequest('User ID is required');
+    if (!id) throw apiError.setBadRequest('Post ID is required.');
+
+    const isLikeHistoryExist = await CommunityPostLike.findOne({
+      where: { UserId: userId, CommunityPostId: id },
+    });
+
+    if (!isLikeHistoryExist)
+      throw apiError.setBadRequest('This user did not LIKE the post.');
+
+    await CommunityPostLike.destroy({
+      where: { UserId: userId, CommunityPostId: id },
+    });
+
+    const foundPost = await CommunityPost.findOne({ where: { id } });
+
+    if (!foundPost)
+      throw apiError.setBadRequest('Post with that ID does not exist.');
+
+    if (!foundPost.likeCnt)
+      throw apiError.setBadRequest('Like count cannot be a minus value.');
+
+    return foundPost.decrement('likeCnt');
   },
 };

@@ -66,4 +66,20 @@ export default {
       next(err);
     }
   },
+
+  async cancelLikePost(req, res, next) {
+    const userId = req.userId;
+    const { id } = req.params;
+    try {
+      await postService.cancelLikePost(userId, id);
+
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully UNDO LIKE the post',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
