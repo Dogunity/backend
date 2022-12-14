@@ -67,4 +67,20 @@ export default {
       next(err);
     }
   },
+
+  async getMyPosts(req, res, next) {
+    const userId = req.userId;
+    try {
+      const foundPosts = await userService.getMyPosts(userId);
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: 'Successfully GET my post list.',
+        result: foundPosts,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };

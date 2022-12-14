@@ -50,7 +50,7 @@ export default {
   },
 
   async getMyCommunities(userId) {
-    if (!userId) throw apiError.setBadRequest('User Id ');
+    if (!userId) throw apiError.setBadRequest('User Id is required');
 
     const myCommunitiesID = await UserCommunity.findAll({
       where: { userId, owner: true },
@@ -68,7 +68,12 @@ export default {
     return myCommunities;
   },
 
-  async myPosts(userId) {
-    await CommunityPost.findAll({ where: { userId } });
+  async getMyPosts(userId) {
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
+
+    return CommunityPost.findAll({
+      where: { userId },
+      order: [['createdAt', 'DESC']],
+    });
   },
 };
