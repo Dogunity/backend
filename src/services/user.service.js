@@ -85,5 +85,11 @@ export default {
 
   async getLikedPosts(userId) {
     if (!userId) throw apiError.setBadRequest('User ID is required.');
+
+    return CommunityPostLike.findAll({
+      where: { userId },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+      include: CommunityPost,
+    });
   },
 };
