@@ -39,8 +39,8 @@ export default {
     return foundComments;
   },
 
-  async deleteComment(userId, id, commentId) {
-    if (!userId) throw apiError.setBadRequest('User ID is required');
+  async removeComment(userId, id, commentId) {
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
     if (!id) throw apiError.setBadRequest('Post ID is required.');
     if (!commentId) throw apiError.setBadRequest('Comment ID is required.');
 
