@@ -28,20 +28,13 @@ export default {
     const foundComments = await CommunityComment.findAll({
       where: { communityPostId: id },
       order: [['createdAt', 'DESC']],
-      raw: true,
+      include: [
+        {
+          model: User,
+          attributes: { exclude: ['password'] },
+        },
+      ],
     });
-
-    await Promise.all(
-      foundComments.map(async (comment) => {
-        const userId = comment.userId;
-        const userInfo = await User.findOne({
-          where: { id: userId },
-          attributes: ['id', 'email', 'nickname', 'profileImg'],
-          raw: true,
-        });
-        comment.userInfo = userInfo;
-      }),
-    );
 
     return foundComments;
   },
