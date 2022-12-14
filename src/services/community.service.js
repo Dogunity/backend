@@ -1,11 +1,6 @@
-import {
-  Community,
-  UserCommunity,
-  CommunityPost,
-  CommunityImage,
-} from '../models';
+import { Community, UserCommunity, CommunityPost } from '../models';
 import ApiError from '../utils/ApiError';
-import { COMMUNITY_PER_PAGE } from '../utils/constants';
+import { COMMUNITY_PER_PAGE, FEED_PER_PAGE } from '../utils/constants';
 import { v4 as uuidv4 } from 'uuid';
 
 const apiError = new ApiError();
@@ -81,7 +76,7 @@ export default {
 
     if (!isCommunityOwner)
       throw apiError.setBadRequest(
-        'Only the community owner could change the contents.',
+        'Only the community owner can change the contents.',
       );
   },
 
@@ -149,6 +144,76 @@ export default {
       images,
       userId,
       communityId: id,
+    });
+  },
+
+  async countFeedPage(id, page) {
+    const totalPosts = await CommunityPost.count({
+      where: { communityId: id },
+    });
+
+    if (totalPosts % FEED_PER_PAGE === 0) return totalPosts / FEED_PER_PAGE;
+    return Math.floor(totalPosts / FEED_PER_PAGE) + 1;
+  },
+
+  async selectedPosts(id, page) {
+    const foundPosts = await CommunityPost.findAll({
+      where: { communityId: id },
+      offset: (page - 1) * FEED_PER_PAGE,
+      limit: FEED_PER_PAGE,
+      order: [['createdAt', 'DESC']],
+    });
+
+    return foundPosts;
+  },
+
+  async getPost(id, postId) {
+    if (!id) throw apiError.setBadRequest('Community ID is required.');
+    if (!postId) throw apiError.setBadRequest('Post ID is required.');
+
+    return CommunityPost.findOne({ where: { communityId: id, id: postId } });
+  },
+
+  async updatePost(userId, id, postId, images, description) {
+    if (!userId) throw apiError.setBadRequest('User ID is required');
+    if (!id) throw apiError.setBadRequest('Community ID is required.');
+    if (!postId) throw apiError.setBadRequest('Post ID is required.');
+
+    if (!images || !description)
+      throw apiError.setBadRequest('All fields are required.');
+
+    const foundPost = await CommunityPost.findOne({
+      where: { id: postId, communityId: id },
+    });
+
+    if (foundPost.userId !== userId)
+      throw apiError.setForbidden('Only the writer can edit the post.');
+
+    images = images.map((image) => image.location);
+
+    return CommunityPost.update(
+      {
+        description,
+        images,
+      },
+      { where: { id: postId, communityId: id, userId } },
+    );
+  },
+
+  async removePost(userId, id, postId) {
+    if (!userId) throw apiError.setBadRequest('User ID is required');
+    if (!id) throw apiError.setBadRequest('Community ID is required.');
+    if (!postId) throw apiError.setBadRequest('Post ID is required.');
+
+    const foundPost = await CommunityPost.findOne({
+      where: { id: postId, communityId: id },
+    });
+
+    if (foundPost.userId !== userId)
+      throw apiError.setForbidden('Only the writer can delete the post.');
+
+    return CommunityPost.destroy({
+      where: { id: postId, communityId: id, userId },
     });
   },
 };

@@ -14,5 +14,7 @@ router.put(
 );
 router.get('/info', tokenVerification, userCtrl.getUserInfo);
 router.get('/community/own', tokenVerification, userCtrl.getMyCommunity);
+router.get('/posts', tokenVerification, userCtrl.getMyPosts);
+router.get('/post/likes', tokenVerification, userCtrl.getLikedPosts);
 
 export default router;

@@ -1,25 +1,15 @@
-import { Community, User, UserCommunity } from '../models';
-import ApiError from '../utils/ApiError';
 import {
-  LIKED_COMMUNITY_PER_PAGE,
-  MY_COMMUNITY_PER_PAGE,
-} from '../utils/constants';
+  Community,
+  CommunityPost,
+  CommunityPostLike,
+  User,
+  UserCommunity,
+} from '../models';
+import ApiError from '../utils/ApiError';
 
 const apiError = new ApiError();
 
 export default {
-  async countLikedCommunityPage(userId) {
-    if (!userId) throw apiError.setBadRequest('User ID is required.');
-
-    const totalCommunityCount = await UserCommunity.count({
-      where: { userId },
-    });
-
-    if (totalCommunityCount % LIKED_COMMUNITY_PER_PAGE === 0)
-      return totalCommunityCount / LIKED_COMMUNITY_PER_PAGE;
-    return Math.floor(totalCommunityCount / LIKED_COMMUNITY_PER_PAGE) + 1;
-  },
-
   async getLikedCommunities(userId) {
     if (!userId) throw apiError.setBadRequest('User ID required.');
 
@@ -66,7 +56,7 @@ export default {
   },
 
   async getMyCommunities(userId) {
-    if (!userId) throw apiError.setBadRequest('User Id ');
+    if (!userId) throw apiError.setBadRequest('User Id is required');
 
     const myCommunitiesID = await UserCommunity.findAll({
       where: { userId, owner: true },
@@ -82,5 +72,24 @@ export default {
     );
 
     return myCommunities;
+  },
+
+  async getMyPosts(userId) {
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
+
+    return CommunityPost.findAll({
+      where: { userId },
+      order: [['createdAt', 'DESC']],
+    });
+  },
+
+  async getLikedPosts(userId) {
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
+
+    return CommunityPostLike.findAll({
+      where: { userId },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
+      include: CommunityPost,
+    });
   },
 };

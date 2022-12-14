@@ -128,4 +128,79 @@ export default {
       next(err);
     }
   },
+
+  async getPosts(req, res, next) {
+    const { id } = req.params;
+    const { page } = req.query;
+    try {
+      const totalFeedPage = await communityService.countFeedPage(id, page);
+
+      const foundPosts = await communityService.selectedPosts(id, page);
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: 'Successfully GET posts of the community.',
+        result: { totalFeedPage, foundPosts },
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async getPost(req, res, next) {
+    const { id, postId } = req.params;
+    try {
+      const foundPost = await communityService.getPost(id, postId);
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: 'Successfully GET the post.',
+        result: foundPost,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async updatePost(req, res, next) {
+    const userId = req.userId;
+    const { id, postId } = req.params;
+    const images = req.files;
+    const { description } = req.body;
+    try {
+      await communityService.updatePost(
+        userId,
+        id,
+        postId,
+        images,
+        description,
+      );
+
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully UPDATE the post.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async removePost(req, res, next) {
+    const userId = req.userId;
+    const { id, postId } = req.params;
+    try {
+      await communityService.removePost(userId, id, postId);
+
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully DELETE the post.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };

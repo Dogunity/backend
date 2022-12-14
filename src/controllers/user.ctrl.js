@@ -67,4 +67,36 @@ export default {
       next(err);
     }
   },
+
+  async getMyPosts(req, res, next) {
+    const userId = req.userId;
+    try {
+      const foundPosts = await userService.getMyPosts(userId);
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: 'Successfully GET my post list.',
+        result: foundPosts,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async getLikedPosts(req, res, next) {
+    const userId = req.userId;
+    try {
+      const foundLikedPosts = await userService.getLikedPosts(userId);
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: 'Successfully GET liked post list.',
+        result: foundLikedPosts,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
