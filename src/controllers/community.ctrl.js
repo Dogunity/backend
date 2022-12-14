@@ -133,8 +133,7 @@ export default {
     const { id } = req.params;
     const { page } = req.query;
     try {
-      const totalFeedPage = await communityService.countFeedPage(id, page);
-
+      const totalFeedPage = await communityService.countFeedPage(id);
       const foundPosts = await communityService.selectedPosts(id, page);
 
       return res.status(200).json({

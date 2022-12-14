@@ -26,7 +26,7 @@ export default {
   },
 
   async createCommunity(userId, name, location, introduction) {
-    if (!userId) throw apiError.setBadRequest('User token is required.');
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
     if (!name || !location || !introduction)
       throw apiError.setBadRequest('All fields are required.');
 
@@ -66,6 +66,12 @@ export default {
 
     await this.checkCommunityOwner(userId);
 
+    const foundCommunity = await this.findCommunityWithID(id);
+
+    await UserCommunity.destroy({
+      where: { communityId: foundCommunity.communityId },
+    });
+
     await Community.destroy({ where: { id } });
   },
 
@@ -94,8 +100,8 @@ export default {
   },
 
   async likeCommunity(userId, id) {
-    if (!userId) throw apiError.setBadRequest('User token is required.');
-    if (!id) throw apiError.setBadRequest('Community ID is required');
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
+    if (!id) throw apiError.setBadRequest('Community ID is required.');
 
     const foundCommunity = await this.findCommunityWithID(id);
 
@@ -115,8 +121,8 @@ export default {
   },
 
   async cancelLikeCommunity(userId, id) {
-    if (!userId) throw apiError.setBadRequest('User token is required.');
-    if (!id) throw apiError.setBadRequest('Community ID is required');
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
+    if (!id) throw apiError.setBadRequest('Community ID is required.');
 
     const foundCommunity = await this.findCommunityWithID(id);
 
@@ -147,7 +153,7 @@ export default {
     });
   },
 
-  async countFeedPage(id, page) {
+  async countFeedPage(id) {
     const totalPosts = await CommunityPost.count({
       where: { communityId: id },
     });
@@ -171,14 +177,20 @@ export default {
     if (!id) throw apiError.setBadRequest('Community ID is required.');
     if (!postId) throw apiError.setBadRequest('Post ID is required.');
 
-    return CommunityPost.findOne({ where: { communityId: id, id: postId } });
+    const foundPost = CommunityPost.findOne({
+      where: { id: postId, communityId: id },
+    });
+
+    if (!foundPost)
+      throw apiError.setBadRequest('Post with those IDs does not exist.');
+
+    return foundPost;
   },
 
   async updatePost(userId, id, postId, images, description) {
     if (!userId) throw apiError.setBadRequest('User ID is required');
     if (!id) throw apiError.setBadRequest('Community ID is required.');
     if (!postId) throw apiError.setBadRequest('Post ID is required.');
-
     if (!images || !description)
       throw apiError.setBadRequest('All fields are required.');
 
@@ -212,7 +224,7 @@ export default {
     if (foundPost.userId !== userId)
       throw apiError.setForbidden('Only the writer can delete the post.');
 
-    return CommunityPost.destroy({
+    await CommunityPost.destroy({
       where: { id: postId, communityId: id, userId },
     });
   },

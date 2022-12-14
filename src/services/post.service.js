@@ -10,6 +10,7 @@ const apiError = new ApiError();
 
 export default {
   async createComment(userId, id, description) {
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
     if (!id) throw apiError.setBadRequest('Post ID is required.');
     if (!description)
       throw apiError.setBadRequest('Comment description is required.');
@@ -62,21 +63,33 @@ export default {
     });
   },
 
-  async likePost(userId, id) {
-    if (!userId) throw apiError.setBadRequest('User ID is required');
-    if (!id) throw apiError.setBadRequest('Post ID is required.');
-
+  async findLikeHistory(userId, id) {
     const isLikeHistoryExist = await CommunityPostLike.findOne({
       where: { userId, communityPostId: id },
     });
 
-    if (isLikeHistoryExist)
-      throw apiError.setBadRequest('This user already liked the post.');
+    return isLikeHistoryExist;
+  },
 
+  async findPostWithPostID(id) {
     const foundPost = await CommunityPost.findOne({ where: { id } });
 
     if (!foundPost)
       throw apiError.setBadRequest('Post with that ID does not exist.');
+
+    return foundPost;
+  },
+
+  async likePost(userId, id) {
+    if (!userId) throw apiError.setBadRequest('User ID is required.');
+    if (!id) throw apiError.setBadRequest('Post ID is required.');
+
+    const isLikeHistoryExist = await this.findLikeHistory(userId, id);
+
+    if (isLikeHistoryExist)
+      throw apiError.setBadRequest('This user already liked the post.');
+
+    const foundPost = await this.findPostWithPostID(id);
 
     await foundPost.increment('likeCnt');
 
@@ -87,9 +100,7 @@ export default {
     if (!userId) throw apiError.setBadRequest('User ID is required');
     if (!id) throw apiError.setBadRequest('Post ID is required.');
 
-    const isLikeHistoryExist = await CommunityPostLike.findOne({
-      where: { userId, communityPostId: id },
-    });
+    const isLikeHistoryExist = await this.findLikeHistory(userId, id);
 
     if (!isLikeHistoryExist)
       throw apiError.setBadRequest('This user did not LIKE the post.');
@@ -98,10 +109,7 @@ export default {
       where: { userId, communityPostId: id },
     });
 
-    const foundPost = await CommunityPost.findOne({ where: { id } });
-
-    if (!foundPost)
-      throw apiError.setBadRequest('Post with that ID does not exist.');
+    const foundPost = await this.findPostWithPostID(id);
 
     if (!foundPost.likeCnt)
       throw apiError.setBadRequest('Like count cannot be a minus value.');
