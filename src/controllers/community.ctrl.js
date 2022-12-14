@@ -187,4 +187,20 @@ export default {
       next(err);
     }
   },
+
+  async removePost(req, res, next) {
+    const userId = req.userId;
+    const { id, postId } = req.params;
+    try {
+      await communityService.removePost(userId, id, postId);
+
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully DELETE the post.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };

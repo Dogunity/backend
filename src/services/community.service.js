@@ -199,4 +199,21 @@ export default {
       { where: { id: postId, communityId: id, userId } },
     );
   },
+
+  async removePost(userId, id, postId) {
+    if (!userId) throw apiError.setBadRequest('User ID is required');
+    if (!id) throw apiError.setBadRequest('Community ID is required.');
+    if (!postId) throw apiError.setBadRequest('Post ID is required.');
+
+    const foundPost = await CommunityPost.findOne({
+      where: { id: postId, communityId: id },
+    });
+
+    if (foundPost.userId !== userId)
+      throw apiError.setForbidden('Only the writer can delete the post.');
+
+    return CommunityPost.destroy({
+      where: { id: postId, communityId: id, userId },
+    });
+  },
 };

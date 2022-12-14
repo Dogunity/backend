@@ -39,5 +39,6 @@ router.put(
   upload.array('images'),
   communityCtrl.updatePost,
 );
+router.delete('/:id/:postId', tokenVerification, communityCtrl.removePost);
 
 export default router;
