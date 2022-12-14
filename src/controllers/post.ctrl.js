@@ -50,4 +50,20 @@ export default {
       next(err);
     }
   },
+
+  async likePost(req, res, next) {
+    const userId = req.userId;
+    const { id } = req.params;
+    try {
+      await postService.likePost(userId, id);
+
+      return res.status(201).json({
+        success: true,
+        status: 201,
+        message: 'Successfully LIKE the post.',
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
 };

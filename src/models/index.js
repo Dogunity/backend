@@ -4,6 +4,7 @@ import CommunityPost from './communityPost.model';
 import User from './user.model';
 import UserCommunity from './userCommunity.model';
 import RefreshToken from './refreshToken.model';
+import CommunityPostLike from './communityPostLike.model';
 
 // Model association
 
@@ -11,9 +12,9 @@ import RefreshToken from './refreshToken.model';
 User.hasMany(CommunityPost, { foreignKey: 'userId', sourceKey: 'id' });
 CommunityPost.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
 
-// User-CommunityPost 1:N (regarding LIKE)
-User.belongsToMany(CommunityPost, { through: 'CommunityPostLIke' });
-CommunityPost.belongsToMany(User, { through: 'CommunityPostLIke' });
+// User-CommunityPost N:M (regarding LIKE)
+User.belongsToMany(CommunityPost, { through: CommunityPostLike });
+CommunityPost.belongsToMany(User, { through: CommunityPostLike });
 
 // Community-CommuntyPost 1:N
 Community.hasMany(CommunityPost, {
@@ -50,4 +51,5 @@ export {
   User,
   UserCommunity,
   RefreshToken,
+  CommunityPostLike,
 };

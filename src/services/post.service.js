@@ -1,4 +1,4 @@
-import { CommunityComment, CommunityPost, User } from '../models';
+import { CommunityComment, CommunityPostLike, User } from '../models';
 import ApiError from '../utils/ApiError';
 
 const apiError = new ApiError();
@@ -57,11 +57,17 @@ export default {
     });
   },
 
-  // async likePost(userId, id) {
-  //   if (!userId) throw apiError.setBadRequest('User ID is required');
-  //   if (!id) throw apiError.setBadRequest('Post ID is required.');
+  async likePost(userId, id) {
+    if (!userId) throw apiError.setBadRequest('User ID is required');
+    if (!id) throw apiError.setBadRequest('Post ID is required.');
 
-  //   const foundPost = await CommunityPost.findOne({ where: { id } });
+    const isLikeHistoryExist = await CommunityPostLike.findOne({
+      where: { UserId: userId, CommunityPostId: id },
+    });
 
-  // },
+    if (isLikeHistoryExist)
+      throw apiError.setBadRequest('This user already liked the post.');
+
+    return CommunityPostLike.create({ UserId: userId, CommunityPostId: id });
+  },
 };
