@@ -14,7 +14,7 @@ export default {
     if (!userId) throw apiError.setBadRequest('User ID required.');
 
     const likedCommunitiesID = await UserCommunity.findAll({
-      where: { userId },
+      where: { userId, owner: false },
       attributes: ['communityId'],
       order: [['createdAt', 'DESC']],
       raw: true,
@@ -43,7 +43,7 @@ export default {
     return foundUser;
   },
 
-  async editUserInfo(userId, nickname, location) {
+  async updateUserInfo(userId, nickname, location) {
     if (!userId) throw apiError.setBadRequest('User ID is required.');
 
     if (!nickname && !location)

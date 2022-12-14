@@ -1,7 +1,7 @@
 import { userService } from '../services';
 
 export default {
-  async likedCommunityList(req, res, next) {
+  async getLikedCommunities(req, res, next) {
     const userId = req.userId;
     try {
       const likedCommunities = await userService.getLikedCommunities(userId);
@@ -33,14 +33,14 @@ export default {
     }
   },
 
-  async editUserInfo(req, res, next) {
+  async updateUserInfo(req, res, next) {
     const userId = req.userId;
     const { nickname } = req.body;
     console.log(req.file);
     const { location } = req.file;
 
     try {
-      await userService.editUserInfo(userId, nickname, location);
+      await userService.updateUserInfo(userId, nickname, location);
 
       return res.status(201).json({
         success: true,
