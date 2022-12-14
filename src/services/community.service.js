@@ -66,6 +66,12 @@ export default {
 
     await this.checkCommunityOwner(userId);
 
+    const foundCommunity = await this.findCommunityWithID(id);
+
+    await UserCommunity.destroy({
+      where: { communityId: foundCommunity.communityId },
+    });
+
     await Community.destroy({ where: { id } });
   },
 
@@ -218,7 +224,7 @@ export default {
     if (foundPost.userId !== userId)
       throw apiError.setForbidden('Only the writer can delete the post.');
 
-    return CommunityPost.destroy({
+    await CommunityPost.destroy({
       where: { id: postId, communityId: id, userId },
     });
   },
